@@ -1,0 +1,322 @@
+# 国際情勢マップアプリ 本番運用設計図（CSV頻繁更新対応版）
+
+---
+
+## ■ 全体構成（まずこれを理解）
+
+```
+[ ユーザー ]
+     ↓
+[ Vercel（フロントアプリ） ]
+     ↓ API通信
+[ Supabase（データ基盤） ]
+     ├ Storage（CSV置き場）
+     └ Database（イベントデータ）
+```
+
+---
+
+## ■ 役割分担
+
+### ① フロント（Vercel）
+
+* 地図表示（Leaflet）
+* ニュース一覧
+* サマリー
+* 航路表示
+* Supabaseからデータ取得
+
+👉 **表示専用（ここにCSVは置かない）**
+
+---
+
+### ② Supabase（超重要）
+
+#### Storage（ファイル）
+
+* CSVアップロード場所
+* 例：
+
+  ```
+  raw/events_2026-03.csv
+  ```
+
+#### Database（本体データ）
+
+* アプリが読むデータ
+
+例：
+
+```
+events テーブル
+```
+
+| column       | 内容      |
+| ------------ | ------- |
+| id           | 主キー     |
+| title        | タイトル    |
+| summary      | 概要      |
+| country_iso3 | 国コード    |
+| category     | 外交/軍事など |
+| importance   | 重要度     |
+| event_date   | 日付      |
+
+👉 **アプリはここだけ読む**
+
+---
+
+## ■ データの流れ（超重要）
+
+```
+CSV作成
+   ↓
+Supabase Storage にアップロード
+   ↓
+（変換処理）
+   ↓
+Databaseに登録
+   ↓
+Reactアプリが取得して表示
+```
+
+---
+
+## ■ なぜこの構成にするか
+
+### ❌ やらない構成
+
+* CSVを直接Reactで読む
+
+理由：
+
+* 更新のたびに再デプロイ必要
+* 処理が重くなる
+* 将来拡張しづらい
+
+---
+
+### ⭕ この構成のメリット
+
+* CSVだけ更新すればOK
+* 表示は即反映
+* 検索・フィルターが高速
+* 将来API化できる
+
+---
+
+## ■ 実装ステップ（順番通りやる）
+
+---
+
+### Step 1：Supabaseプロジェクト作成
+
+1. Supabaseに登録
+2. 新規プロジェクト作成
+
+---
+
+### Step 2：テーブル作成
+
+SQLエディタで実行👇
+
+```sql
+create table events (
+  id uuid primary key default gen_random_uuid(),
+  title text,
+  summary text,
+  country_iso3 text,
+  category text,
+  importance int,
+  event_date date,
+  created_at timestamp default now()
+);
+```
+
+---
+
+### Step 3：CSVアップロード
+
+Supabase Storageで：
+
+* bucket名：`raw`
+* CSVをアップロード
+
+---
+
+### Step 4：CSV → DB変換（重要）
+
+方法は2つあります：
+
+---
+
+## 【初心者おすすめ】手動インポート
+
+Supabaseの画面から：
+
+* CSVアップロード
+* テーブルにインポート
+
+👉 最初はこれでOK
+
+---
+
+## 【本格運用】自動化
+
+後でやる：
+
+* Edge Function
+* またはNodeスクリプト
+
+---
+
+## ■ フロント側の変更（重要）
+
+今の状態：
+
+```js
+CSV読み込み
+```
+
+これを👇に変更
+
+---
+
+### Supabase接続
+
+```bash
+npm install @supabase/supabase-js
+```
+
+---
+
+### 接続コード
+
+```js
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  'https://xxxx.supabase.co',
+  '公開キー'
+)
+```
+
+---
+
+### データ取得
+
+```js
+const { data, error } = await supabase
+  .from('events')
+  .select('*')
+```
+
+---
+
+👉 これでCSV依存から脱却
+
+---
+
+## ■ MapView / DetailPanel の変更点
+
+### 今
+
+```js
+events（CSV由来）
+```
+
+### 変更後
+
+```js
+events（Supabaseから取得）
+```
+
+👉 中身は同じなのでロジックはほぼそのまま使える
+
+---
+
+## ■ CSVフォーマット（維持する）
+
+既存フォーマットをそのまま使う：
+
+* title
+* summary
+* country_iso3
+* category
+* importance
+* event_date
+
+👉 変更不要
+
+---
+
+## ■ 更新フロー（運用）
+
+### 毎日の流れ
+
+1. CSV編集
+2. Supabaseにアップロード
+3. テーブルに反映
+
+👉 アプリは自動で更新される
+
+---
+
+## ■ 将来の進化
+
+### ① CSV自動取り込み
+
+* アップロード → 自動DB反映
+
+### ② 管理画面
+
+* ブラウザで入力
+
+### ③ API化
+
+* 外部サービス連携
+
+---
+
+## ■ 広告（AdSense）
+
+### 入れる場所
+
+* App.jsx のルート付近
+
+### 注意
+
+* 管理画面には入れない
+* コンテンツ充実後に申請
+
+---
+
+## ■ ディレクトリ構成（最終形）
+
+```
+src/
+  components/
+    MapView.jsx
+    DetailPanel.jsx
+
+  lib/
+    supabase.js   ← NEW
+
+  App.jsx
+```
+
+---
+
+## ■ 最重要ポイントまとめ
+
+* フロントとデータを分離する
+* CSVは「入力用」
+* DBが「表示用」
+* Vercelは表示専用
+
+---
+
+## ■ 一言
+
+👉 **「アプリ」ではなく「サービス」として運用する構成**
+
+---

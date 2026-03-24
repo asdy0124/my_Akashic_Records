@@ -1,0 +1,22 @@
+country_iso3,country_name,country_name_ja,title,summary,detail,related_countries,impact_summary,category,event_date,source_name,source_url,importance
+JPN,Japan,日本,日米首脳会談,日米首脳が会談を実施,安全保障と経済協力について協議,USA,外交関係の強化,外交,2026-03-24,NHK,https://example.com/1,4
+USA,United States,アメリカ合衆国,新たな制裁を発表,米国が追加制裁を発表,対象国への経済的圧力が強まる,RUS;CHN,国際経済への影響,制裁,2026-03-23,CNN,https://example.com/2,5
+CHN,China,中国,南シナ海で合同演習,中国が海上演習を実施,周辺国との緊張が高まる,JPN;PHL,安全保障リスクの上昇,軍事,2026-03-22,Reuters,https://example.com/3,3
+JPN,Japan,日本,日米首脳会談,日米首脳が会談を実施,安全保障と経済協力について協議,USA,外交関係の強化,外交,2026-03-24,NHK,https://example.com/1,4
+USA,United States,アメリカ合衆国,対中制裁強化,米国が対中制裁を拡大,半導体輸出規制を強化,CHN,経済摩擦の激化,制裁,2026-03-23,CNN,https://example.com/2,5
+CHN,China,中国,南シナ海演習,中国が海上演習を実施,周辺国との緊張が高まる,JPN;PHL,安全保障リスク上昇,軍事,2026-03-22,Reuters,https://example.com/3,3
+RUS,Russia,ロシア,エネルギー供給制限,欧州向けガス供給を制限,エネルギー価格上昇,EU,経済への影響拡大,エネルギー,2026-03-21,BBC,https://example.com/4,4
+KOR,South Korea,韓国,日韓経済協議,経済協力に関する協議,貿易関係の改善,JPN,地域安定への寄与,経済,2026-03-20,KBS,https://example.com/5,2
+IND,India,インド,インド軍演習,大規模軍事演習を実施,周辺国への影響懸念,CHN;PAK,軍事的緊張の上昇,軍事,2026-03-19,NDTV,https://example.com/6,3
+UKR,Ukraine,ウクライナ,前線で衝突激化,戦闘が激化,人的被害増加,RUS,国際的緊張の増加,紛争,2026-03-24,AFP,https://example.com/7,5
+DEU,Germany,ドイツ,EU経済政策発表,新たな経済政策を発表,景気対策を強化,EU,欧州経済への影響,経済,2026-03-23,DW,https://example.com/8,3
+FRA,France,フランス,外交会談実施,各国と外交協議,関係強化を図る,USA;DEU,外交関係の改善,外交,2026-03-22,LeMonde,https://example.com/9,2
+AUS,Australia,オーストラリア,防衛協力強化,同盟国と防衛協力,軍事連携を強化,USA;JPN,安全保障の強化,安全保障,2026-03-24,ABC,https://example.com/10,4
+JPN,Japan,日本,日米首脳会談,日米首脳が会談を実施,安全保障と経済協力について協議,USA,外交関係の強化,外交,2026-03-24,NHK,https://example.com/1,4
+USA,United States,アメリカ合衆国,対中制裁強化,米国が対中制裁を拡大,半導体輸出規制を強化,CHN,経済摩擦の激化,制裁,2026-03-23,CNN,https://example.com/2,5
+CHN,China,中国,南シナ海演習,中国が海上演習を実施,周辺国との緊張が高まる,JPN;PHL,安全保障リスク上昇,軍事,2026-03-22,Reuters,https://example.com/3,3
+RUS,Russia,ロシア,エネルギー供給制限,欧州向けガス供給を制限,エネルギー価格上昇,EU,経済への影響拡大,エネルギー,2026-03-21,BBC,https://example.com/4,4
+KOR,South Korea,韓国,日韓経済協議,経済協力に関する協議,貿易関係の改善,JPN,地域安定への寄与,経済,2026-03-20,KBS,https://example.com/5,2
+IND,India,インド,インド軍演習,大規模軍事演習を実施,周辺国への影響懸念,CHN;PAK,軍事的緊張の上昇,軍事,2026-03-19,NDTV,https://example.com/6,3
+UKR,Ukraine,ウクライナ,前線で衝突激化,戦闘が激化,人的被害増加,RUS,国際的緊張の増加,紛争,2026-03-24,AFP,https://example.com/7,5
+AUS,Australia,オーストラリア,防衛協力強化,同盟国と防衛協力,軍事連携を強化,USA;JPN,安全保障の強化,安全保障,2026-03-24,ABC,https://example.com/10,4

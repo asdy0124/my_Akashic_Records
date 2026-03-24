@@ -1,0 +1,24 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "ISO_A3": "JPN",
+        "NAME": "Japan"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [138.0, 36.0],
+            [142.0, 36.0],
+            [142.0, 40.0],
+            [138.0, 40.0],
+            [138.0, 36.0]
+          ]
+        ]
+      }
+    }
+  ]
+}
