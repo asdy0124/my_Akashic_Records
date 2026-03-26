@@ -1,10 +1,3 @@
-<h1 style={{ marginBottom: "10px" }}>
-  国際情勢ビューア
-</h1>
-<p style={{ color: "#64748b", marginBottom: "16px" }}>
-  地図から世界のニュースを直感的に理解
-</p>
-
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import MapView from "./components/MapView";
@@ -261,29 +254,40 @@ function App() {
   }
 
   return (
-    <div className="app">
-      <MapView
-        selectedCountry={selectedCountry}
-        relatedCountries={relatedCountries}
-        countriesWithArticles={countriesWithArticles}
-        countryEventCounts={countryEventCounts}
-        onCountryClick={handleCountryClick}
-      />
+    <div className="page">
+      <header className="page-header">
+        <h1>国際情勢ビューア</h1>
+        <p>地図から世界のニュースを直感的に理解</p>
+      </header>
 
-      <DetailPanel
-        selectedCountry={selectedCountry}
-        events={sortedEvents}
-        selectedEvent={selectedEvent}
-        onEventClick={handleEventClick}
-        selectedCategory={selectedCategory}
-        onCategoryChange={setSelectedCategory}
-        sortBy={sortBy}
-        onSortChange={setSortBy}
-        searchKeyword={searchKeyword}
-        onSearchKeywordChange={setSearchKeyword}
-        dateRange={dateRange}
-        onDateRangeChange={setDateRange}
-      />
+      <div className="app">
+        <div className="map-section">
+          <MapView
+            selectedCountry={selectedCountry}
+            relatedCountries={relatedCountries}
+            countriesWithArticles={countriesWithArticles}
+            countryEventCounts={countryEventCounts}
+            onCountryClick={handleCountryClick}
+          />
+        </div>
+
+        <div className="detail-section">
+          <DetailPanel
+            selectedCountry={selectedCountry}
+            events={sortedEvents}
+            selectedEvent={selectedEvent}
+            onEventClick={handleEventClick}
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
+            searchKeyword={searchKeyword}
+            onSearchKeywordChange={setSearchKeyword}
+            dateRange={dateRange}
+            onDateRangeChange={setDateRange}
+          />
+        </div>
+      </div>
     </div>
   );
 }
