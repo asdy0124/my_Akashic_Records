@@ -3,7 +3,6 @@ import {
   CircleMarker,
   GeoJSON,
   MapContainer,
-  Polyline,
   TileLayer,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -17,8 +16,7 @@ function MapView({
   onCountryClick,
 }) {
   const [geoData, setGeoData] = useState(null);
-  const [showSeaRoutes, setShowSeaRoutes] = useState(true);
-  const [showAirRoutes, setShowAirRoutes] = useState(false);
+
 
   useEffect(() => {
     fetch("/data/countries.geojson")
@@ -57,7 +55,7 @@ function MapView({
   };
 
   const getCountryStyle = (feature) => {
-    const iso3 = String(feature.properties.ISO_A3 || "").toUpperCase();
+    const iso3 = getIso3FromFeature(feature);
 
     return {
       ...defaultStyle,
@@ -91,9 +89,7 @@ function MapView({
 
     return geoData.features
       .map((feature) => {
-        const iso3 = String(feature?.properties?.ISO_A3 || "")
-          .toUpperCase()
-          .trim();
+        const iso3 = getIso3FromFeature(feature);
 
         if (!articleCountrySet.has(iso3)) return null;
 
@@ -111,57 +107,8 @@ function MapView({
       .filter(Boolean);
   }, [geoData, countriesWithArticles]);
 
-  const seaRoutes = [
-    {
-      id: "sea-asia-europe",
-      name: "アジア - 欧州航路",
-      positions: [
-        [31.2, 121.5], // 上海
-        [1.29, 103.85], // シンガポール
-        [25.27, 55.3], // ドバイ付近
-        [31.0, 32.3], // スエズ運河付近
-        [51.92, 4.48], // ロッテルダム
-      ],
-    },
-    {
-      id: "sea-indian-ocean",
-      name: "インド洋航路",
-      positions: [
-        [35.68, 139.76], // 東京
-        [22.3, 114.17], // 香港
-        [1.29, 103.85], // シンガポール
-        [19.07, 72.88], // ムンバイ
-        [25.2, 55.27], // ドバイ
-      ],
-    },
-  ];
-
-  const airRoutes = [
-    {
-      id: "air-europe-middle-asia",
-      name: "欧州 - 中東 - アジア航空路",
-      positions: [
-        [51.47, -0.45], // ロンドン
-        [25.25, 55.36], // ドバイ
-        [13.69, 100.75], // バンコク
-        [35.55, 139.78], // 東京
-      ],
-    },
-    {
-      id: "air-europe-asia",
-      name: "欧州 - 東アジア航空路",
-      positions: [
-        [48.35, 11.79], // ミュンヘン
-        [41.27, 28.75], // イスタンブール
-        [25.25, 55.36], // ドバイ
-        [1.36, 103.99], // シンガポール
-      ],
-    },
-  ];
-
-  
   const onEachCountry = (feature, layer) => {
-    const iso3 = String(feature.properties.ISO_A3 || "").toUpperCase();
+    const iso3 = getIso3FromFeature(feature);
     const name =
       feature.properties.ADMIN ||
       feature.properties.NAME ||
@@ -206,23 +153,6 @@ function MapView({
 
   return (
     <div className="map-wrapper">
-      <div className="map-overlay-controls">
-        <button
-          type="button"
-          className={`map-toggle-button ${showSeaRoutes ? "active" : ""}`}
-          onClick={() => setShowSeaRoutes((prev) => !prev)}
-        >
-          航路
-        </button>
-
-        <button
-          type="button"
-          className={`map-toggle-button ${showAirRoutes ? "active" : ""}`}
-          onClick={() => setShowAirRoutes((prev) => !prev)}
-        >
-          航空ルート
-        </button>
-      </div>
       <MapContainer
         center={[20, 0]}
         zoom={2}
@@ -244,32 +174,7 @@ function MapView({
           />
         )}
         
-        {showSeaRoutes &&
-          seaRoutes.map((route) => (
-            <Polyline
-              key={route.id}
-              positions={route.positions}
-              pathOptions={{
-                color: "#0ea5e9",
-                weight: 3,
-                opacity: 0.8,
-                dashArray: "8 6",
-              }}
-            />
-          ))}
 
-        {showAirRoutes &&
-          airRoutes.map((route) => (
-            <Polyline
-              key={route.id}
-              positions={route.positions}
-              pathOptions={{
-                color: "#8b5cf6",
-                weight: 2,
-                opacity: 0.75,
-              }}
-            />
-          ))}
 
         {articleMarkers.map((marker) => (
           <CircleMarker
@@ -319,6 +224,25 @@ function LegendItem({ color, label }) {
     }
 
 // --- 以下ユーティリティ ---
+function getIso3FromFeature(feature) {
+  const props = feature?.properties || {};
+
+  const candidates = [
+    props.ADM0_A3,
+    props.SOV_A3,
+    props.GU_A3,
+    props.ISO_A3,
+    props.iso_a3,
+    props.id,
+  ];
+
+  const found = candidates.find((value) => {
+    const code = String(value || "").toUpperCase().trim();
+    return code && code !== "-99";
+  });
+
+  return String(found || "").toUpperCase().trim();
+}
 function getFeatureCenter(geometry) {
   if (!geometry) return null;
 

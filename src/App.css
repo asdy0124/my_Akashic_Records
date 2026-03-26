@@ -125,9 +125,10 @@ body,
 }
 
 .event-card-selected {
-  border-color: #2563eb;
-  background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 100%);
-  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.12);
+  border-color: #2563eb; /* 青に変更 */
+  background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
+  box-shadow: 0 8px 22px rgba(37, 99, 235, 0.18);
+  transform: translateY(-1px);
 }
 
 .event-card-top {
@@ -421,35 +422,6 @@ body,
   }
 }
 
-.map-overlay-controls {
-  position: absolute;
-  top: 60px;
-  left: 12px;
-  z-index: 1000;
-  display: flex;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
-  padding: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-}
-
-.map-toggle-button {
-  padding: 6px 10px;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  background: #ffffff;
-  color: #0f172a;
-  cursor: pointer;
-  font-size: 13px;
-}
-
-.map-toggle-button.active {
-  background: #2563eb;
-  color: #ffffff;
-  border-color: #2563eb;
-}
 
 
 /* =========================
@@ -600,6 +572,16 @@ body,
   background: #fff;
 }
 
+.related-info {
+  margin: 12px 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #e0f2fe;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid #bae6fd;
+}
 
 .date-input-col {
   flex: 1;
@@ -676,3 +658,16 @@ body,
   font-size: 12px;
 }
 
+.event-card-selected {
+  border-color: #2563eb;
+  background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
+  box-shadow: 0 10px 26px rgba(37, 99, 235, 0.25);
+  transform: translateY(-2px) scale(1.01);
+}
+
+.selected-badge {
+  background: #2563eb;
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+}

@@ -1,3 +1,10 @@
+<h1 style={{ marginBottom: "10px" }}>
+  国際情勢ビューア
+</h1>
+<p style={{ color: "#64748b", marginBottom: "16px" }}>
+  地図から世界のニュースを直感的に理解
+</p>
+
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import MapView from "./components/MapView";
@@ -73,6 +80,9 @@ function App() {
         .from("events")
         .select("*")
         .order("event_date", { ascending: false });
+
+      console.log("Supabase data:", data);
+      console.log("Supabase error:", error);
 
       if (ignore) return;
 
@@ -153,25 +163,13 @@ function App() {
   }, [searchedEvents, sortBy]);
 
   const relatedCountries = useMemo(() => {
-    if (selectedEvent) {
-      return (selectedEvent.related_countries || "")
-        .split(";")
-        .map((code) => code.trim().toUpperCase())
-        .filter(Boolean);
-    }
+    if (!selectedEvent) return [];
 
-    if (!selectedCountry) {
-      const allRelated = dateFilteredEvents.flatMap((event) =>
-        (event.related_countries || "")
-          .split(";")
-          .map((code) => code.trim().toUpperCase())
-          .filter(Boolean)
-      );
-      return [...new Set(allRelated)];
-    }
-
-    return [];
-  }, [selectedEvent, selectedCountry, dateFilteredEvents]);
+    return (selectedEvent.related_countries || "")
+      .split(";")
+      .map((code) => code.trim().toUpperCase())
+      .filter(Boolean);
+  }, [selectedEvent]);
 
   const countriesWithArticles = useMemo(() => {
     return [
@@ -197,15 +195,26 @@ function App() {
   }, [dateFilteredEvents]);
 
   const handleCountryClick = (country) => {
-    if (!country?.iso3) return;
+    const clickedIso3 = String(country?.iso3 || "").toUpperCase().trim();
+    if (!clickedIso3) return;
 
-    if (selectedCountry?.iso3 === country.iso3) {
-      setSelectedCountry(null);
+    setSelectedCountry((prev) => {
+      const prevIso3 = String(prev?.iso3 || "").toUpperCase().trim();
+
+      console.log("clickedIso3:", clickedIso3);
+      console.log("prevIso3:", prevIso3);
+
+      if (prevIso3 === clickedIso3) {
+        setSelectedEvent(null);
+        return null;
+      }
+
       setSelectedEvent(null);
-    } else {
-      setSelectedCountry(country);
-      setSelectedEvent(null);
-    }
+      return {
+        ...country,
+        iso3: clickedIso3,
+      };
+    });
 
     requestAnimationFrame(() => {
       const panel = document.querySelector(".detail-panel");
@@ -216,6 +225,8 @@ function App() {
   };
 
   const handleEventClick = (event) => {
+    console.log("選択イベント:", event);
+
     if (selectedEvent === event) {
       setSelectedEvent(null);
     } else {

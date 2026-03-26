@@ -227,6 +227,11 @@ function DetailPanel({
       {activeTab === "news" && (
         <>
           <h2>{panelTitle}</h2>
+          {selectedEvent && (
+            <div className="related-info">
+              関連国を表示中（イベント選択中）
+            </div>
+          )}
 
           {summaryData.total > 0 && (
             <div className="summary-card">
