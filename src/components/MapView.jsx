@@ -16,7 +16,13 @@ function MapView({
   onCountryClick,
 }) {
   const [geoData, setGeoData] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   useEffect(() => {
     fetch("/data/countries.geojson")
@@ -154,9 +160,11 @@ function MapView({
   return (
     <div className="map-wrapper">
       <MapContainer
-        center={[20, 0]}
-        zoom={2}
-        minZoom={2}
+        center={isMobile ? [22, 10] : [20, 0]}
+        zoom={isMobile ? 1.5 : 2}
+        minZoom={isMobile ? 1.5 : 2}
+        zoomSnap={0.1}
+        zoomDelta={0.25}
         scrollWheelZoom={true}
         className="leaflet-map"
         worldCopyJump={true}
@@ -173,8 +181,6 @@ function MapView({
             onEachFeature={onEachCountry}
           />
         )}
-        
-
 
         {articleMarkers.map((marker) => (
           <CircleMarker
