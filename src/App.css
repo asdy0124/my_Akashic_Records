@@ -837,32 +837,36 @@ body,
   }
 
   .map-legend {
-    left: 10px;
-    bottom: 10px;
-    max-width: 220px;
-    padding: 10px 12px;
-    border-radius: 12px;
-    font-size: 0.78rem;
+  left: 6px;
+    bottom: 6px;
+    min-width: 0;
+    max-width: 118px;
+    padding: 6px 7px;
+    border-radius: 8px;
+    font-size: 9px;
+    line-height: 1.25;
   }
 
   .map-legend-title {
-    font-size: 0.82rem;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
+    font-size: 10px;
+    line-height: 1.2;
   }
 
   .map-legend-item {
-    gap: 8px;
-    margin-bottom: 5px;
+    gap: 5px;
+    margin-bottom: 3px;
   }
 
   .map-legend-color {
-    width: 12px;
-    height: 12px;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
   }
 
   .map-legend-note {
-    font-size: 0.72rem;
-    line-height: 1.5;
+    font-size: 8px;
+    line-height: 1.3;
   }
 
   .leaflet-control-zoom {
@@ -1226,19 +1230,22 @@ body,
   /* 上段2カラム */
   .detail-mobile-layout {
     display: grid;
-    grid-template-columns: 116px minmax(0, 1fr);
-    column-gap: 10px;
+    grid-template-columns: 104px minmax(0, calc(100% - 104px - 8px));
+    column-gap: 8px;
     row-gap: 10px;
     align-items: start;
     width: 100%;
   }
 
+
   .date-panel {
     grid-column: 1;
     grid-row: 1;
+    width: 104px;
+    min-width: 104px;
+    max-width: 104px;
     margin-bottom: 0;
     padding: 10px;
-    min-width: 0;
   }
 
   .news-main-panel {
@@ -1246,6 +1253,7 @@ body,
     grid-row: 1;
     min-width: 0;
     width: 100%;
+    max-width: 100%;
   }
 
   .news-list-area {
@@ -1253,6 +1261,7 @@ body,
     grid-row: 2;
     min-width: 0;
     width: 100%;
+    max-width: 100%;
   }
 
   /* 右カラムの右端を地図の右端に合わせる */
@@ -1271,16 +1280,16 @@ body,
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
+    width: 100%;
     margin-bottom: 10px;
   }
 
   .tab-container .tab-button {
     width: 100%;
     min-width: 0;
-    padding: 10px 8px;
-    font-size: 0.95rem;
+    padding: 10px 6px;
+    font-size: 0.9rem;
   }
-
   .panel-title-mobile {
     margin: 0 0 10px;
     font-size: 1rem;
@@ -1368,3 +1377,262 @@ body,
   }
 }
 
+/* =========================
+   📱 MOBILE FINAL (完全版)
+   ========================= */
+@media (max-width: 768px) {
+  .page {
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .page-header {
+    padding: 12px 12px 0;
+  }
+
+  .page-header h1 {
+    font-size: 1.1rem;
+    line-height: 1.2;
+  }
+
+  .page-header p {
+    margin-top: 4px;
+    font-size: 0.78rem;
+    line-height: 1.4;
+  }
+
+  .app,
+  .app-layout {
+    height: calc(100dvh - 72px);
+    min-height: 0;
+    padding: 8px;
+    gap: 8px;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 38dvh minmax(0, 1fr);
+  }
+
+  .map-section,
+  .detail-section {
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .map-wrapper {
+    height: 100%;
+    min-height: 0;
+    border-radius: 10px;
+  }
+
+  .map-legend {
+    left: 6px;
+    bottom: 6px;
+    min-width: 0;
+    max-width: 110px;
+    padding: 6px;
+    border-radius: 8px;
+    font-size: 9px;
+    line-height: 1.2;
+  }
+
+  .map-legend-title {
+    margin-bottom: 4px;
+    font-size: 10px;
+    line-height: 1.2;
+  }
+
+  .map-legend-item {
+    gap: 4px;
+    margin-bottom: 3px;
+  }
+
+  .map-legend-color {
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+  }
+
+  .map-legend-note {
+    font-size: 8px;
+    line-height: 1.2;
+  }
+
+  .leaflet-control-zoom {
+    transform: scale(0.85);
+    transform-origin: top left;
+  }
+
+  .detail-panel {
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .detail-mobile-layout {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    column-gap: 8px;
+    row-gap: 10px;
+    align-items: start;
+    width: 100%;
+  }
+
+  .date-panel {
+    grid-column: 1;
+    grid-row: 1;
+    width: 96px;
+    min-width: 96px;
+    max-width: 96px;
+    margin-bottom: 0;
+    padding: 8px;
+  }
+
+  .news-main-panel {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .news-list-area {
+    grid-column: 2;
+    grid-row: 2;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .news-main-panel > *,
+  .news-list-area > *,
+  .summary-card,
+  .event-card,
+  .filter-row,
+  .select,
+  .input {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .tab-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  .tab-container .tab-button {
+    width: 100%;
+    min-width: 0;
+    padding: 8px 6px;
+    font-size: 0.85rem;
+  }
+
+  .panel-title-mobile {
+    margin: 0 0 8px;
+    font-size: 0.95rem;
+    line-height: 1.25;
+    word-break: break-word;
+  }
+
+  .summary-card {
+    padding: 8px 10px;
+    border-radius: 10px;
+  }
+
+  .summary-text {
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  .filter-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .date-title {
+    font-size: 11px;
+  }
+
+  .date-range {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    word-break: break-word;
+  }
+
+  .date-buttons {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .date-buttons .tab-button {
+    width: 100%;
+    padding: 8px 6px;
+    font-size: 0.85rem;
+  }
+
+  .date-input-group {
+    display: grid;
+    gap: 6px;
+  }
+
+  .date-input-col {
+    min-width: 0;
+  }
+
+  .date-count {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    word-break: break-word;
+  }
+
+  .event-card {
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .event-card-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .event-title {
+    font-size: 0.92rem;
+    line-height: 1.4;
+  }
+
+  .event-summary,
+  .meta-value {
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  .event-badges {
+    gap: 6px;
+  }
+
+  .event-badge {
+    font-size: 0.72rem;
+    padding: 4px 8px;
+  }
+
+  .event-date {
+    font-size: 0.74rem;
+    padding: 4px 8px;
+  }
+
+  .source-block {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}
