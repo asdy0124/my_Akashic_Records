@@ -150,31 +150,22 @@ function DetailPanel({
     ? `${selectedCountry.nameJa || selectedCountry.name} の今週まとめ`
     : "世界の今週まとめ";
 
-  return (
-    <div className="detail-panel">
-      {/* 上段: 期間エリア */}
+return (
+  <div className="detail-panel">
+    <div className="detail-mobile-layout">
       <div className="date-panel">
-        
-        <div className="date-title">
-          表示期間
-        </div>
+        <div className="date-title">表示期間</div>
 
         <div className="date-range">
           {formatDate(dateRange.from)} 〜 {formatDate(dateRange.to)}
         </div>
 
         <div className="date-buttons">
-          <button
-            onClick={() => handlePresetRange(7)}
-            className="tab-button"
-          >
+          <button onClick={() => handlePresetRange(7)} className="tab-button">
             直近7日
           </button>
 
-          <button
-            onClick={() => handlePresetRange(30)}
-            className="tab-button"
-          >
+          <button onClick={() => handlePresetRange(30)} className="tab-button">
             直近30日
           </button>
         </div>
@@ -206,77 +197,84 @@ function DetailPanel({
         </div>
       </div>
 
-      {/* タブ */}
-      <div className="tab-container">
-        <button
-          onClick={() => setActiveTab("news")}
-          className={`tab-button ${activeTab === "news" ? "active" : ""}`}
-        >
-          ニュース
-        </button>
+      <div className="news-main-panel">
+        <div className="tab-container">
+          <button
+            onClick={() => setActiveTab("news")}
+            className={`tab-button ${activeTab === "news" ? "active" : ""}`}
+          >
+            ニュース
+          </button>
 
-        <button
-          onClick={() => setActiveTab("summary")}
-          className={`tab-button ${activeTab === "summary" ? "active" : ""}`}
-        >
-          今週まとめ
-        </button>
-      </div>
+          <button
+            onClick={() => setActiveTab("summary")}
+            className={`tab-button ${activeTab === "summary" ? "active" : ""}`}
+          >
+            今週まとめ
+          </button>
+        </div>
 
-      {/* ニュースタブ */}
-      {activeTab === "news" && (
-        <>
-          <h2>{panelTitle}</h2>
-          {selectedEvent && (
-            <div className="related-info">
-              関連国を表示中（イベント選択中）
+        {activeTab === "news" ? (
+          <>
+            <h2 className="panel-title-mobile">{panelTitle}</h2>
+
+            {selectedEvent && (
+              <div className="related-info">
+                関連国を表示中（イベント選択中）
+              </div>
+            )}
+
+            {summaryData.total > 0 && (
+              <div className="summary-card">
+                <p className="summary-text">
+                  {selectedCountry
+                    ? `${selectedCountry.nameJa || selectedCountry.name}：今週 ${summaryData.total}件（外交${summaryData.categoryCounts.外交} / 軍事${summaryData.categoryCounts.軍事} / 経済${summaryData.categoryCounts.経済}）`
+                    : `世界：今週 ${summaryData.total}件（外交${summaryData.categoryCounts.外交} / 軍事${summaryData.categoryCounts.軍事} / 経済${summaryData.categoryCounts.経済}）`}
+                </p>
+              </div>
+            )}
+
+            <div className="filter-row">
+              <select
+                value={selectedCategory}
+                onChange={(e) => onCategoryChange(e.target.value)}
+                className="select"
+              >
+                {categories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={sortBy}
+                onChange={(e) => onSortChange(e.target.value)}
+                className="select"
+              >
+                <option value="date">新着順</option>
+                <option value="importance">重要度順</option>
+              </select>
             </div>
-          )}
+          </>
+        ) : (
+          <>
+            <h2 className="panel-title-mobile">{summaryTitle}</h2>
 
-          {summaryData.total > 0 && (
             <div className="summary-card">
               <p className="summary-text">
                 {selectedCountry
-                  ? `${selectedCountry.nameJa || selectedCountry.name}：今週 ${summaryData.total}件（外交${summaryData.categoryCounts.外交} / 軍事${summaryData.categoryCounts.軍事} / 経済${summaryData.categoryCounts.経済}）`
-                  : `世界：今週 ${summaryData.total}件（外交${summaryData.categoryCounts.外交} / 軍事${summaryData.categoryCounts.軍事} / 経済${summaryData.categoryCounts.経済}）`}
+                  ? `${selectedCountry.nameJa || selectedCountry.name} の出来事を要約表示中`
+                  : "世界全体の出来事を要約表示中"}
               </p>
             </div>
-          )}
-{/*
-          <div className="search-box">
-            <input
-              type="text"
-              placeholder="タイトル・概要で検索"
-              value={searchKeyword}
-              onChange={(e) => onSearchKeywordChange(e.target.value)}
-              className="input"
-            />
-          </div>*/}
+          </>
+        )}
+      </div>
 
-          <div className="filter-row">
-            <select
-              value={selectedCategory}
-              onChange={(e) => onCategoryChange(e.target.value)}
-              className="select"
-            >
-              {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={sortBy}
-              onChange={(e) => onSortChange(e.target.value)}
-              className="select"
-            >
-              <option value="date">新着順</option>
-              <option value="importance">重要度順</option>
-            </select>
-          </div>
-
-          {events.length === 0 ? (
+      <div className="news-list-area">
+        {activeTab === "news" ? (
+          events.length === 0 ? (
             <p>該当する記事がありません。</p>
           ) : (
             events.map((event, index) => (
@@ -287,91 +285,77 @@ function DetailPanel({
                 onClick={() => onEventClick(event)}
               />
             ))
-          )}
-        </>
-      )}
+          )
+        ) : events.length === 0 ? (
+          <p>この期間にまとめ対象の出来事はありません。</p>
+        ) : (
+          <div className="summary-grid">
+            <section className="summary-card">
+              <h3 className="summary-title">概要</h3>
+              <p className="summary-text">
+                {selectedCountry
+                  ? `${selectedCountry.nameJa || selectedCountry.name} では、この期間に ${summaryData.total} 件の出来事がありました。`
+                  : `世界全体では、この期間に ${summaryData.total} 件の出来事がありました。`}
+              </p>
+            </section>
 
-      {/* 今週まとめタブ */}
-      {activeTab === "summary" && (
-        <>
-          <h2>{summaryTitle}</h2>
+            <section className="summary-card">
+              <h3 className="summary-title">カテゴリ別件数</h3>
+              <div className="summary-list">
+                <SummaryRow label="外交" value={`${summaryData.categoryCounts.外交}件`} />
+                <SummaryRow label="軍事" value={`${summaryData.categoryCounts.軍事}件`} />
+                <SummaryRow label="経済" value={`${summaryData.categoryCounts.経済}件`} />
+                <SummaryRow label="その他" value={`${summaryData.categoryCounts.その他}件`} />
+              </div>
+            </section>
 
-          {events.length === 0 ? (
-            <p>この期間にまとめ対象の出来事はありません。</p>
-          ) : (
-            <div className="summary-grid">
-              <section className="summary-card">
-                <h3 className="summary-title">概要</h3>
-                <p className="summary-text">
-                  {selectedCountry
-                    ? `${selectedCountry.nameJa || selectedCountry.name} では、この期間に ${summaryData.total} 件の出来事がありました。`
-                    : `世界全体では、この期間に ${summaryData.total} 件の出来事がありました。`}
-                </p>
-              </section>
-
-              <section className="summary-card">
-                <h3 className="summary-title">カテゴリ別件数</h3>
-                <div className="summary-list">
-                  <SummaryRow label="外交" value={`${summaryData.categoryCounts.外交}件`} />
-                  <SummaryRow label="軍事" value={`${summaryData.categoryCounts.軍事}件`} />
-                  <SummaryRow label="経済" value={`${summaryData.categoryCounts.経済}件`} />
-                  <SummaryRow label="その他" value={`${summaryData.categoryCounts.その他}件`} />
-                </div>
-              </section>
-
-              <section className="summary-card">
-                <h3 className="summary-title">注目トピック（重要度上位）</h3>
-                <div className="topics-list">
-                  {summaryData.topEvents.map((event, index) => (
-                    <div
-                      key={`${event.title}-${index}`}
-                      className="topic-item"
-                    >
-                      <div className="topic-title">
-                        {event.title || "タイトルなし"}
-                      </div>
-                      <div className="topic-meta">
-                        {event.event_date ? formatDate(event.event_date) : "日付不明"} /{" "}
-                        {event.category || "カテゴリ不明"} / 重要度{" "}
-                        {event.importance || 0}
-                      </div>
-                      <div className="topic-summary">
-                        {event.summary || "概要なし"}
-                      </div>
+            <section className="summary-card">
+              <h3 className="summary-title">注目トピック（重要度上位）</h3>
+              <div className="topics-list">
+                {summaryData.topEvents.map((event, index) => (
+                  <div key={`${event.title}-${index}`} className="topic-item">
+                    <div className="topic-title">{event.title || "タイトルなし"}</div>
+                    <div className="topic-meta">
+                      {event.event_date ? formatDate(event.event_date) : "日付不明"} /{" "}
+                      {event.category || "カテゴリ不明"} / 重要度 {event.importance || 0}
                     </div>
-                  ))}
-                </div>
-              </section>
-
-              {!selectedCountry && (
-                <section className="summary-card">
-                  <h3 className="summary-title">出来事が多かった国</h3>
-                  <div className="summary-list">
-                    {summaryData.topCountries.map(([countryName, count]) => (
-                      <SummaryRow
-                        key={countryName}
-                        label={countryName}
-                        value={`${count}件`}
-                      />
-                    ))}
+                    <div className="topic-summary">
+                      {event.summary || "概要なし"}
+                    </div>
                   </div>
-                </section>
-              )}
+                ))}
+              </div>
+            </section>
 
+            {!selectedCountry && (
               <section className="summary-card">
-                <h3 className="summary-title">日別件数</h3>
+                <h3 className="summary-title">出来事が多かった国</h3>
                 <div className="summary-list">
-                  {summaryData.dailyCounts.map(([date, count]) => (
-                    <SummaryRow key={date} label={date} value={`${count}件`} />
+                  {summaryData.topCountries.map(([countryName, count]) => (
+                    <SummaryRow
+                      key={countryName}
+                      label={countryName}
+                      value={`${count}件`}
+                    />
                   ))}
                 </div>
               </section>
-            </div>
-          )}
-        </>
-      )}
+            )}
+
+            <section className="summary-card">
+              <h3 className="summary-title">日別件数</h3>
+              <div className="summary-list">
+                {summaryData.dailyCounts.map(([date, count]) => (
+                  <SummaryRow key={date} label={date} value={`${count}件`} />
+                ))}
+              </div>
+            </section>
+          </div>
+        )}
+      </div>
     </div>
-  );
+  </div>
+);
 }
 
 function SummaryRow({ label, value }) {
