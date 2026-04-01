@@ -63,6 +63,17 @@ function MapView({
   const getCountryStyle = (feature) => {
     const iso3 = getIso3FromFeature(feature);
 
+    if (isCrimeaFeature(feature)) {
+      return {
+        ...defaultStyle,
+        fillColor: "transparent",
+        fillOpacity: 0,
+        color: "transparent",
+        opacity: 0,
+        weight: 0,
+      };
+    }
+
     return {
       ...defaultStyle,
       fillColor: getCountryFillColor(iso3),
@@ -78,6 +89,31 @@ function MapView({
           : 1,
     };
   };
+
+  function isCrimeaFeature(feature) {
+    const props = feature?.properties || {};
+
+    const nameCandidates = [
+      props.NAME,
+      props.NAME_EN,
+      props.NAME_JA,
+      props.ADMIN,
+      props.NAME_LONG,
+      props.BRK_NAME,
+      props.formal_en,
+      props.name,
+    ]
+      .map((value) => String(value || "").toLowerCase().trim())
+      .filter(Boolean);
+
+    return nameCandidates.some((name) => {
+      return (
+        name.includes("crimea") ||
+        name.includes("crimean") ||
+        name.includes("クリミア")
+      );
+    });
+  }
 
   const geoJsonResetStyle = (layer, feature) => {
     const style = getCountryStyle(feature);
@@ -114,6 +150,10 @@ function MapView({
   }, [geoData, countriesWithArticles]);
 
   const onEachCountry = (feature, layer) => {
+    if (isCrimeaFeature(feature)) {
+      return;
+    }
+
     const iso3 = getIso3FromFeature(feature);
     const name =
       feature.properties.ADMIN ||
@@ -127,15 +167,12 @@ function MapView({
 
     const count = countryEventCounts?.[iso3] || 0;
 
-    layer.bindTooltip(
-      `${nameJa || name}：${count}件`,
-      {
-        sticky: true,
-      }
-    );
+    layer.bindTooltip(`${nameJa || name}：${count}件`, {
+      sticky: true,
+    });
 
     layer.on({
-      mouseover: (e) => {
+        mouseover: (e) => {
         const targetLayer = e.target;
         targetLayer.setStyle({
           weight: 2,

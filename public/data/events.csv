@@ -1,22 +1,29 @@
-country_iso3,country_name,country_name_ja,title,summary,detail,related_countries,impact_summary,category,event_date,source_name,source_url,importance
-JPN,Japan,日本,日米首脳会談,日米首脳が会談を実施,安全保障と経済協力について協議,USA,外交関係の強化,外交,2026-03-24,NHK,https://example.com/1,4
-USA,United States,アメリカ合衆国,新たな制裁を発表,米国が追加制裁を発表,対象国への経済的圧力が強まる,RUS;CHN,国際経済への影響,制裁,2026-03-23,CNN,https://example.com/2,5
-CHN,China,中国,南シナ海で合同演習,中国が海上演習を実施,周辺国との緊張が高まる,JPN;PHL,安全保障リスクの上昇,軍事,2026-03-22,Reuters,https://example.com/3,3
-JPN,Japan,日本,日米首脳会談,日米首脳が会談を実施,安全保障と経済協力について協議,USA,外交関係の強化,外交,2026-03-24,NHK,https://example.com/1,4
-USA,United States,アメリカ合衆国,対中制裁強化,米国が対中制裁を拡大,半導体輸出規制を強化,CHN,経済摩擦の激化,制裁,2026-03-23,CNN,https://example.com/2,5
-CHN,China,中国,南シナ海演習,中国が海上演習を実施,周辺国との緊張が高まる,JPN;PHL,安全保障リスク上昇,軍事,2026-03-22,Reuters,https://example.com/3,3
-RUS,Russia,ロシア,エネルギー供給制限,欧州向けガス供給を制限,エネルギー価格上昇,EU,経済への影響拡大,エネルギー,2026-03-21,BBC,https://example.com/4,4
-KOR,South Korea,韓国,日韓経済協議,経済協力に関する協議,貿易関係の改善,JPN,地域安定への寄与,経済,2026-03-20,KBS,https://example.com/5,2
-IND,India,インド,インド軍演習,大規模軍事演習を実施,周辺国への影響懸念,CHN;PAK,軍事的緊張の上昇,軍事,2026-03-19,NDTV,https://example.com/6,3
-UKR,Ukraine,ウクライナ,前線で衝突激化,戦闘が激化,人的被害増加,RUS,国際的緊張の増加,紛争,2026-03-24,AFP,https://example.com/7,5
-DEU,Germany,ドイツ,EU経済政策発表,新たな経済政策を発表,景気対策を強化,EU,欧州経済への影響,経済,2026-03-23,DW,https://example.com/8,3
-FRA,France,フランス,外交会談実施,各国と外交協議,関係強化を図る,USA;DEU,外交関係の改善,外交,2026-03-22,LeMonde,https://example.com/9,2
-AUS,Australia,オーストラリア,防衛協力強化,同盟国と防衛協力,軍事連携を強化,USA;JPN,安全保障の強化,安全保障,2026-03-24,ABC,https://example.com/10,4
-JPN,Japan,日本,日米首脳会談,日米首脳が会談を実施,安全保障と経済協力について協議,USA,外交関係の強化,外交,2026-03-24,NHK,https://example.com/1,4
-USA,United States,アメリカ合衆国,対中制裁強化,米国が対中制裁を拡大,半導体輸出規制を強化,CHN,経済摩擦の激化,制裁,2026-03-23,CNN,https://example.com/2,5
-CHN,China,中国,南シナ海演習,中国が海上演習を実施,周辺国との緊張が高まる,JPN;PHL,安全保障リスク上昇,軍事,2026-03-22,Reuters,https://example.com/3,3
-RUS,Russia,ロシア,エネルギー供給制限,欧州向けガス供給を制限,エネルギー価格上昇,EU,経済への影響拡大,エネルギー,2026-03-21,BBC,https://example.com/4,4
-KOR,South Korea,韓国,日韓経済協議,経済協力に関する協議,貿易関係の改善,JPN,地域安定への寄与,経済,2026-03-20,KBS,https://example.com/5,2
-IND,India,インド,インド軍演習,大規模軍事演習を実施,周辺国への影響懸念,CHN;PAK,軍事的緊張の上昇,軍事,2026-03-19,NDTV,https://example.com/6,3
-UKR,Ukraine,ウクライナ,前線で衝突激化,戦闘が激化,人的被害増加,RUS,国際的緊張の増加,紛争,2026-03-24,AFP,https://example.com/7,5
-AUS,Australia,オーストラリア,防衛協力強化,同盟国と防衛協力,軍事連携を強化,USA;JPN,安全保障の強化,安全保障,2026-03-24,ABC,https://example.com/10,4
+﻿country_iso3,country_name,country_name_ja,title,summary,detail,related_countries,impact_summary,category,event_date,source_name,source_url,importance
+TCD,Chad,チャド,チャドがスーダン難民をめぐり国境へ軍を展開,チャドがスーダン国境から難民を移送させ、攻撃に備えて軍を展開した,紛争の懸念,SDN,国際関係,軍事,2026/3/23,Reuters,https://www.reuters.com/world/africa/chad-relocates-sudan-refugees-army-deploys-near-border-2026-03-23/,1
+USA,America,アメリカ,トランプ大統領、次はキューバ言及,トランプ大統領が演説で軍事成果を強調し、次の標的としてキューバに言及。緊張拡大の懸念が浮上。,紛争の懸念,CUB,国際関係,軍事,2026/3/27,Reuters,https://www.reuters.com/world/americas/trump-says-cuba-is-next-speech-touting-us-military-successes-2026-03-27/,4
+CAN,Canada,カナダ,カナダ、メルコスール協定狙う,カナダが交渉を加速、2026年9?10月の署名を目標に年内合意を目指すと報告。,経済関係の再編,BRA;ARG;PRY,貿易,貿易,2026/3/27,Reuters,https://www.reuters.com/world/canada-eyes-mercosur-pact-by-autumn-2026-03-27/,4
+EU,EU,欧州連合,EＵとTPPがデジタル分野の合意を形成,歴史的なデジタル貿易協定で実質的進展、規範と市場開放で合意へ。,経済関係の再編,CPTPP,貿易,貿易,2026/3/27,Reuters,https://www.reuters.com/world/americas/eu-cptpp-agree-progress-with-historic-digital-trade-deal-canadas-international-2026-03-27/,5
+CAN,Canada,カナダ,メルコスールとカナダがFTA合意間近,カナダとメルコスールのFTAについて年内合意を目指すと表明,経済関係の再編,BRA;ARG;PRY,貿易,貿易,2026/3/27,Reuters,https://www.reuters.com/world/americas/mercosur-canada-near-free-trade-agreement-with-april-talks-2026-03-27/,4
+MEX,Mexico,メキシコ,メキシコがキューバ医師協定維持を表明,メキシコが過疎地支援のため、キューバへの医師派遣協定を継続すると表明,国際関係,CUB,国際関係,外交,2026/3/25,Reuters,https://www.reuters.com/world/americas/mexico-uphold-cuban-doctor-agreement-president-says-2026-03-25/,2
+USA,America,アメリカ,トランプ氏、マドゥロ大統領への追加訴追を示唆,1月の奇襲で拘束されたマドゥロ大統領に対し追加訴追を表明。,国際関係,VEN,国際関係,外交,2026/3/26,Reuters,https://www.reuters.com/world/americas/trump-says-venezuelas-maduro-face-additional-charges-2026-03-26/,3
+CRI,Costa Rica,コスタリカ,コスタリカ、アメリカからの移民送還者受け入れへ,アメリカが強制送還する移民を週最大25人受け入れへ,国際関係,USA,国際関係,外交,2026/3/23,Reuters,https://www.reuters.com/world/americas/costa-rica-plans-accept-us-sent-migrants-other-countries-2026-03-24/,4
+YEM,Yemen,イエメン,フーシ派がイランの戦線へ参加表明,フーシ派がイスラエル攻撃開始を表明、地域緊張拡大へ,紛争の懸念,IRN;USA;ISR,軍事的緊張,紛争,2026/3/29,Reuters,https://www.reuters.com/world/asia-pacific/yemens-houthis-enter-iran-war-with-attacks-israel-while-us-marines-arrive-region-2026-03-28/,5
+CHN,China,中国,比中、南シナ海協議再開へ,,国際関係,PHL,国際関係,安全保障,2026/3/28,Reuters,https://www.reuters.com/business/energy/manila-beijing-resume-talks-south-china-sea-energy-security-2026-03-28/,4
+NPL,Nepal,ネパール,ネパール首相にシャー氏が就任,シャー氏が選挙圧勝を受け首相に就任し新政権を樹立へ。,国内政治,,その他,その他,2026/3/27,Reuters,https://www.reuters.com/world/china/ex-rapper-shah-sworn-nepal-prime-minister-after-sweeping-election-win-2026-03-27/,2
+IDN,Indonesia,インドネシア,インドネシア、未成年SNS規制が施行,未成年の利用制限と年齢確認義務で運用混乱が懸念,国内政治,,その他,その他,2026/3/28,Reuters,https://www.reuters.com/business/media-telecom/indonesias-social-media-curbs-kids-set-saturday-few-know-how-it-will-work-2026-03-27/,3
+PRK,North Korea,北朝鮮,北朝鮮とベラルーシが友好条約に署名,両国が公式に友好条約を締結、外交・防衛と経済で今後協力を深化へ,国際関係,BLR,国際関係,外交,2026/3/27,Reuters,https://www.reuters.com/world/asia-pacific/north-korea-belarus-sign-friendship-treaty-kcna-says-2026-03-26/,5
+PAK,Pakistan,パキスタン,パキスタン、アフガニスタンで軍事作戦継続,パキスタン外務省が越境攻撃継続を表明、タリバン拠点を標的と説明,紛争の懸念,AFG,軍事的緊張,紛争,2026/3/26,Reuters,https://www.reuters.com/world/asia-pacific/pakistan-continuing-military-operations-against-afghanistan-pakistan-foreign-2026-03-26/,5
+USA,America,アメリカ,トランプ大統領、イランのエネルギー施設への攻撃を一時停止,エネルギー施設への攻撃を10日間停止と表明、米の15項目案をイランが検討中,紛争の懸念,IRN,軍事的緊張,紛争,2026/3/26,Reuters,https://www.reuters.com/world/asia-pacific/iran-says-it-is-reviewing-us-ceasefire-plan-no-talks-trump-says-tehran-leaders-2026-03-26/,5
+IRN,Iran,イラン,アメリカがアラクチ外相らを攻撃対象から一時解除,パキスタンの仲介により米がアラクチ外相らを攻撃対象から一時的に外す,紛争の懸念,USA;PAK,軍事的緊張,紛争,2026/3/26,Reuters,https://www.reuters.com/world/asia-pacific/israel-took-irans-araqchi-qalibaf-off-hit-list-pakistan-request-pakistani-2026-03-26/,5
+JPN,Japan,日本,日本、対中関係を「最重要」から格下げ,2026年外交青書案から中国が『最重要』指定から外れる,国際関係,CHN,国際関係,外交,2026/3/24,Reuters,https://www.reuters.com/world/china/japan-drop-most-important-tag-china-ties-2026-03-24/,5
+CHN,China,中国,香港警察、外国人へのパスワード取得権拡大,香港にて警察による携帯・PCのパスワード入手が可能となり監視強化が懸念される。,国内政治,,その他,その他,2026/3/23,Reuters,https://www.reuters.com/world/china/hong-kong-police-given-new-powers-obtain-phone-computer-passwords-2026-03-23/,5
+UKR,Ukraine,ウクライナ,ウクライナとサウジアラビアが防衛協力に合意,,国際関係,SAU,国際関係,安全保障,2026/3/27,Reuters,https://www.reuters.com/business/aerospace-defense/ukraine-saudi-arabia-sign-deal-defence-cooperation-zelenskiy-says-2026-03-27/,5
+UKR,Ukraine,ウクライナ,ウクライナ、ロシアのエネルギー施設へ圧力,ウクライナがロシアの石油施設への攻撃を発表,紛争,RUS,軍事的緊張,紛争,2026/3/26,Reuters,https://www.reuters.com/business/energy/ukraine-using-strikes-pressure-russia-after-oil-sanctions-eased-zelenskiy-says-2026-03-26/,5
+CYP,Cyprus,キプロス,キプロス、イギリスと基地協議,基地の将来や使用条件を協議へ、2月の無人機攻撃が契機に,国際関係,GBR,国際関係,安全保障,2026/3/25,Reuters,https://www.reuters.com/world/uk/cyprus-has-opened-discussion-with-uk-over-its-bases-president-says-2026-03-25/,4
+DNK,Denmark,デンマーク,デンマーク首相が辞任表明尾,選挙敗北を受けてフレデリクセン首相が辞任を表明,国内政治,,その他,その他,2026/3/25,Reuters,https://www.reuters.com/world/europe/denmarks-prime-minister-hands-government-resignation-after-election-defeat-2026-03-25/,3
+UKR,Ukraine,ウクライナ,ウクライナがUAE・カタールと防衛協力,ゼレンスキー大統領の訪問で10年間の協力が合意、ドローン対策や燃料供給で連携強化,国際関係,ARE;QAT,国際関係,安全保障,2026/3/28,Reuters,https://www.reuters.com/world/middle-east/ukraine-uae-agree-cooperate-defence-zelenskiy-says-2026-03-28/,5
+ISR,Israel,イスラエル,イスラエルがレバノン南部へ緩衝地帯設置計画を発表,イスラエルがレバノン南部のリタニ川まで占領する計画を発表,紛争,LBN,軍事的緊張,紛争,2026/3/24,Reuters,https://www.reuters.com/graphics/IRAN-CRISIS/LEBANON-ISRAEL-INFRASTRUCTURE/gkvlklaxypb/,5
+GBR,Britain,イギリス,イギリスとトルコが空防協定に署名,数十億ポンド規模の新たな訓練・支援契約に署名,国際関係,TUR,国際関係,安全保障,2026/3/25,Reuters,https://www.reuters.com/business/aerospace-defense/uk-turkey-sign-multi-billion-pound-air-defence-deal-2026-03-25/,4
+COD,Democratic Republic of the Congo,コンゴ民主共和国,DRコンゴが中国との鉱業協力強化,中国との鉱業連携強化によりアメリカとの供給競争が拡大,国際関係,CHN,国際関係,貿易,2026/3/27,Reuters,https://www.reuters.com/world/africa/congo-china-deepen-mining-ties-us-pushes-rival-minerals-pact-2026-03-27/,4
+KEN,Kenya,ケニア,ケニアが中国との貿易協定に最終合意,98%の輸出が中国市場であるケニアが関税免除に最終合意,国際関係,CHN,国際関係,貿易,2026/3/25,Reuters,https://www.reuters.com/world/africa/kenya-finalises-trade-deal-with-china-president-says-2026-03-25/,3
+EU,EU,欧州連合,欧州連合・オーストラリアが貿易協定を締結,物品関税ほぼ撤廃、農産物・鉱物・サービスで開放。投資優遇とGI保護も。,,AUS,国際関係,貿易,2026/3/24,Reuters,https://www.reuters.com/business/highlights-eu-australia-trade-agreement-2026-03-24/,5

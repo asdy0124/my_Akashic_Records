@@ -1,4 +1,5 @@
 import { countryNamesJa } from "../data/countryNamesJa";
+import { expandCountryCodes } from "../utils/countryGroups";
 
 function formatDate(dateString) {
   if (!dateString) return "日付不明";
@@ -16,13 +17,20 @@ function formatDate(dateString) {
 function formatRelatedCountries(relatedCountries) {
   if (!relatedCountries) return "なし";
 
-  const names = relatedCountries
+  const rawItems = relatedCountries
     .split(";")
-    .map((code) => code.trim())
-    .filter(Boolean)
-    .map((code) => countryNamesJa[code] || code);
+    .map((code) => code.trim().toUpperCase())
+    .filter(Boolean);
 
-  return names.join(" / ");
+  const labels = rawItems.map((code) => {
+    if (code === "EU") {
+      return "EU（欧州連合）";
+    }
+
+    return countryNamesJa[code] || code;
+  });
+
+  return labels.join(" / ");
 }
 
 function getImportanceClass(importance) {

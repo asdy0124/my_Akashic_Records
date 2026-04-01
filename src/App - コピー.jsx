@@ -3,10 +3,6 @@ import "./App.css";
 import MapView from "./components/MapView";
 import DetailPanel from "./components/DetailPanel";
 import { supabase } from "./lib/supabase";
-import {
-  expandCountryCodes,
-  includesCountryCode,
-} from "./utils/countryGroups";
 
 function App() {
   const [events, setEvents] = useState([]);
@@ -75,23 +71,7 @@ function App() {
 
       const { data, error } = await supabase
         .from("events")
-        .select(`
-          id,
-          country_iso3,
-          country_name,
-          country_name_ja,
-          title,
-          summary,
-          detail,
-          related_countries,
-          impact_summary,
-          category,
-          event_date,
-          source_name,
-          source_url,
-          importance,
-          created_at
-        `)
+        .select("*")
         .order("event_date", { ascending: false });
 
       console.log("Supabase data:", data);
@@ -135,10 +115,11 @@ function App() {
   const countryFilteredEvents = useMemo(() => {
     if (!selectedCountry) return dateFilteredEvents;
 
-    const selectedIso3 = String(selectedCountry.iso3 || "").toUpperCase().trim();
-
     return dateFilteredEvents.filter((event) => {
-      return includesCountryCode(selectedIso3, event.country_iso3);
+      return (
+        String(event.country_iso3).toUpperCase().trim() ===
+        String(selectedCountry.iso3).toUpperCase().trim()
+      );
     });
   }, [dateFilteredEvents, selectedCountry]);
 
@@ -175,15 +156,20 @@ function App() {
   }, [searchedEvents, sortBy]);
 
   const relatedCountries = useMemo(() => {
-    return expandCountryCodes(selectedEvent?.related_countries || "");
+    if (!selectedEvent) return [];
+
+    return (selectedEvent.related_countries || "")
+      .split(";")
+      .map((code) => code.trim().toUpperCase())
+      .filter(Boolean);
   }, [selectedEvent]);
 
-    const countriesWithArticles = useMemo(() => {
+  const countriesWithArticles = useMemo(() => {
     return [
       ...new Set(
-        dateFilteredEvents.flatMap((event) =>
-          expandCountryCodes(event.country_iso3)
-        )
+        dateFilteredEvents
+          .map((event) => String(event.country_iso3 || "").toUpperCase().trim())
+          .filter(Boolean)
       ),
     ];
   }, [dateFilteredEvents]);
@@ -192,11 +178,10 @@ function App() {
     const counts = {};
 
     dateFilteredEvents.forEach((event) => {
-      const expandedCodes = expandCountryCodes(event.country_iso3);
+      const iso3 = String(event.country_iso3 || "").toUpperCase().trim();
+      if (!iso3) return;
 
-      expandedCodes.forEach((iso3) => {
-        counts[iso3] = (counts[iso3] || 0) + 1;
-      });
+      counts[iso3] = (counts[iso3] || 0) + 1;
     });
 
     return counts;
