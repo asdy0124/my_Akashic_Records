@@ -15,6 +15,7 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState("すべて");
   const [sortBy, setSortBy] = useState("date");
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [countryKeyword, setCountryKeyword] = useState("");
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
 
@@ -162,8 +163,26 @@ function App() {
     });
   }, [categoryFilteredEvents, searchKeyword]);
 
+  const countryNameFilteredEvents = useMemo(() => {
+    const keyword = countryKeyword.trim().toLowerCase();
+
+    if (!keyword) return searchedEvents;
+
+    return searchedEvents.filter((event) => {
+      const countryNameJa = String(event.country_name_ja || "").toLowerCase();
+      const countryName = String(event.country_name || "").toLowerCase();
+      const iso3 = String(event.country_iso3 || "").toLowerCase();
+
+      return (
+        countryNameJa.includes(keyword) ||
+        countryName.includes(keyword) ||
+        iso3.includes(keyword)
+      );
+    });
+  }, [searchedEvents, countryKeyword]);
+
   const sortedEvents = useMemo(() => {
-    const copied = [...searchedEvents];
+    const copied = [...countryNameFilteredEvents];
 
     if (sortBy === "importance") {
       return copied.sort((a, b) => Number(b.importance) - Number(a.importance));
@@ -172,8 +191,27 @@ function App() {
     return copied.sort(
       (a, b) => new Date(b.event_date) - new Date(a.event_date)
     );
-  }, [searchedEvents, sortBy]);
+  }, [countryNameFilteredEvents, sortBy]);
 
+  // 👇ここに追加（この行の真下）
+  useEffect(() => {
+    const keyword = countryKeyword.trim();
+
+    if (!keyword) return;
+    if (sortedEvents.length === 0) return;
+
+    const firstEvent = sortedEvents[0];
+    const iso3 = String(firstEvent.country_iso3 || "").toUpperCase().trim();
+
+    if (!iso3) return;
+
+    setSelectedCountry({
+      iso3,
+      name: firstEvent.country_name || firstEvent.country_name_ja || iso3,
+      nameJa: firstEvent.country_name_ja || firstEvent.country_name || iso3,
+    });
+  }, [countryKeyword, sortedEvents]);
+  
   const relatedCountries = useMemo(() => {
     return expandCountryCodes(selectedEvent?.related_countries || "");
   }, [selectedEvent]);
@@ -233,12 +271,24 @@ function App() {
   };
 
   const handleEventClick = (event) => {
-    console.log("選択イベント:", event);
+    if (!event) return;
 
-    if (selectedEvent === event) {
+    const eventIso3 = String(event.country_iso3 || "").toUpperCase().trim();
+  
+    if (selectedEvent?.id === event.id) {
       setSelectedEvent(null);
-    } else {
-      setSelectedEvent(event);
+      setSelectedCountry(null);
+      return;
+    }
+
+    setSelectedEvent(event);
+
+    if (eventIso3) {
+      setSelectedCountry({
+        iso3: eventIso3,
+        name: event.country_name || event.country_name_ja || eventIso3,
+        nameJa: event.country_name_ja || event.country_name || eventIso3,
+      });
     }
   };
 
@@ -298,6 +348,8 @@ function App() {
             onSortChange={setSortBy}
             searchKeyword={searchKeyword}
             onSearchKeywordChange={setSearchKeyword}
+            countryKeyword={countryKeyword}
+            onCountryKeywordChange={setCountryKeyword}
             dateRange={dateRange}
             onDateRangeChange={setDateRange}
           />

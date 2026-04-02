@@ -1636,3 +1636,102 @@ body,
     gap: 6px;
   }
 }
+
+/* =========================
+   スマホ右端の余白対策
+========================= */
+
+.page,
+.app,
+.map-section,
+.detail-section,
+.detail-panel,
+.detail-mobile-layout,
+.news-main-panel,
+.news-list-area {
+  min-width: 0;
+}
+
+.detail-panel {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.detail-mobile-layout {
+  width: 100%;
+  min-width: 0;
+}
+
+.news-main-panel {
+  width: 100%;
+  min-width: 0;
+}
+
+.news-list-area {
+  width: 100%;
+  min-width: 0;
+}
+
+.event-card {
+  width: 100%;
+  max-width: 100%;
+}
+
+.input,
+.select,
+.tab-container,
+.filter-row,
+.search-box,
+.date-input-group {
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .page {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .app {
+    width: 100%;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .detail-section {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .detail-panel {
+    width: 100%;
+    padding: 12px;
+    overflow-x: hidden;
+  }
+
+  .detail-mobile-layout {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 8px;
+    width: 100%;
+    min-width: 0;
+    align-items: start;
+  }
+
+  .date-panel {
+    width: 88px;
+    min-width: 88px;
+    padding: 8px;
+  }
+
+  .news-main-panel {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .news-list-area {
+    min-width: 0;
+    width: 100%;
+  }
+}

@@ -12,6 +12,8 @@ function DetailPanel({
   onSortChange,
   searchKeyword,
   onSearchKeywordChange,
+  countryKeyword,
+  onCountryKeywordChange,
   dateRange,
   onDateRangeChange,
 }) {
@@ -255,6 +257,16 @@ return (
                 <option value="date">新着順</option>
                 <option value="importance">重要度順</option>
               </select>
+            </div>
+
+            <div className="search-box">
+              <input
+                type="text"
+                className="input"
+                placeholder="国名で検索（例: 日本、アメリカ、中国）"
+                value={countryKeyword}
+                onChange={(e) => onCountryKeywordChange(e.target.value)}
+              />
             </div>
           </>
         ) : (

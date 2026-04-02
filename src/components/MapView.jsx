@@ -1,18 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
+import L from "leaflet";
 import {
   CircleMarker,
   GeoJSON,
   MapContainer,
   TileLayer,
+  useMap,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { getJapaneseCountryNameFromIso3 } from "../utils/countryNameJa";
 
 function MapView({
   selectedCountry,
-  relatedCountries,
-  countriesWithArticles,
-  countryEventCounts,
+  relatedCountries = [],
+  countriesWithArticles = [],
+  countryEventCounts = {},
   onCountryClick,
 }) {
   const [geoData, setGeoData] = useState(null);
@@ -211,6 +213,13 @@ function MapView({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
+        {geoData && selectedCountry && (
+          <MapAutoFocus
+            geoData={geoData}
+            selectedCountry={selectedCountry}
+          />
+        )}
+
         {geoData && (
           <GeoJSON
             data={geoData}
@@ -252,6 +261,37 @@ function MapView({
       </div>
     </div>
   );
+}
+
+function MapAutoFocus({ geoData, selectedCountry }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!geoData?.features?.length) return;
+    if (!selectedCountry?.iso3) return;
+
+    const targetIso3 = String(selectedCountry.iso3).toUpperCase().trim();
+
+    const feature = geoData.features.find((item) => {
+      const iso3 = getIso3FromFeature(item);
+      return iso3 === targetIso3;
+    });
+
+    if (!feature) return;
+
+    const layer = L.geoJSON(feature);
+    const bounds = layer.getBounds();
+
+    if (bounds.isValid()) {
+      map.fitBounds(bounds, {
+        padding: [20, 20],
+        maxZoom: 5,
+        animate: true,
+      });
+    }
+  }, [geoData, selectedCountry, map, getIso3FromFeature]);
+
+  return null;
 }
 
 function LegendItem({ color, label }) {
