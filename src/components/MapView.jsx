@@ -16,6 +16,8 @@ function MapView({
   countriesWithArticles = [],
   countryEventCounts = {},
   onCountryClick,
+  onClearSelection,
+  hasSelection = false,
 }) {
   const [geoData, setGeoData] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -217,6 +219,8 @@ function MapView({
           <MapAutoFocus
             geoData={geoData}
             selectedCountry={selectedCountry}
+            relatedCountries={relatedCountries}
+            isMobile={isMobile}
           />
         )}
 
@@ -242,6 +246,15 @@ function MapView({
           />
         ))}
       </MapContainer>
+      {hasSelection && (
+        <button
+          type="button"
+          className="map-clear-button"
+          onClick={onClearSelection}
+        >
+          選択解除
+        </button>
+      )}
 
       {/* 凡例 */}
       <div className="map-legend">
@@ -263,33 +276,42 @@ function MapView({
   );
 }
 
-function MapAutoFocus({ geoData, selectedCountry }) {
+function MapAutoFocus({
+  geoData,
+  selectedCountry,
+  relatedCountries = [],
+  isMobile = false,
+}) {
   const map = useMap();
 
   useEffect(() => {
     if (!geoData?.features?.length) return;
     if (!selectedCountry?.iso3) return;
 
-    const targetIso3 = String(selectedCountry.iso3).toUpperCase().trim();
+    const targetCodes = new Set([
+      String(selectedCountry.iso3 || "").toUpperCase().trim(),
+      ...relatedCountries.map((code) => String(code || "").toUpperCase().trim()),
+    ]);
 
-    const feature = geoData.features.find((item) => {
-      const iso3 = getIso3FromFeature(item);
-      return iso3 === targetIso3;
+    const targetFeatures = geoData.features.filter((feature) => {
+      const iso3 = getIso3FromFeature(feature);
+      return targetCodes.has(iso3);
     });
 
-    if (!feature) return;
+    if (targetFeatures.length === 0) return;
 
-    const layer = L.geoJSON(feature);
+    const layer = L.geoJSON(targetFeatures);
     const bounds = layer.getBounds();
 
-    if (bounds.isValid()) {
-      map.fitBounds(bounds, {
-        padding: [20, 20],
-        maxZoom: 5,
-        animate: true,
-      });
-    }
-  }, [geoData, selectedCountry, map, getIso3FromFeature]);
+    if (!bounds.isValid()) return;
+
+    map.fitBounds(bounds, {
+      paddingTopLeft: isMobile ? [20, 20] : [40, 40],
+      paddingBottomRight: isMobile ? [20, 140] : [40, 40],
+      maxZoom: isMobile ? 2.8 : 3.5,
+      animate: true,
+    });
+  }, [geoData, selectedCountry, relatedCountries, isMobile, map]);
 
   return null;
 }

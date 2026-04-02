@@ -241,6 +241,7 @@ function App() {
   }, [dateFilteredEvents]);
 
   const handleCountryClick = (country) => {
+    
     const clickedIso3 = String(country?.iso3 || "").toUpperCase().trim();
     if (!clickedIso3) return;
 
@@ -270,11 +271,16 @@ function App() {
     });
   };
 
+  const handleClearSelection = () => {
+    setSelectedCountry(null);
+    setSelectedEvent(null);
+  };
+
   const handleEventClick = (event) => {
     if (!event) return;
 
     const eventIso3 = String(event.country_iso3 || "").toUpperCase().trim();
-  
+
     if (selectedEvent?.id === event.id) {
       setSelectedEvent(null);
       setSelectedCountry(null);
@@ -333,6 +339,8 @@ function App() {
             countriesWithArticles={countriesWithArticles}
             countryEventCounts={countryEventCounts}
             onCountryClick={handleCountryClick}
+            onClearSelection={handleClearSelection}
+            hasSelection={Boolean(selectedCountry || selectedEvent)}
           />
         </div>
 
@@ -342,6 +350,7 @@ function App() {
             events={sortedEvents}
             selectedEvent={selectedEvent}
             onEventClick={handleEventClick}
+            onClearSelection={handleClearSelection}
             selectedCategory={selectedCategory}
             onCategoryChange={setSelectedCategory}
             sortBy={sortBy}
