@@ -365,10 +365,23 @@ return (
           </div>
         )}
       </div>
+    <div className="site-links">
+    <a href="/privacy.html" target="_blank" rel="noreferrer">
+      プライバシーポリシー
+    </a>
+    <a href="/terms.html" target="_blank" rel="noreferrer">
+      利用規約
+    </a>
+    <a href="/contact.html" target="_blank" rel="noreferrer">
+      お問い合わせ
+    </a>
+      </div>
     </div>
   </div>
 );
 }
+
+
 
 function SummaryRow({ label, value }) {
   return (

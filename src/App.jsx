@@ -18,6 +18,7 @@ function App() {
   const [countryKeyword, setCountryKeyword] = useState("");
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
+  const [showIntroToast, setShowIntroToast] = useState(true);
 
   // 初期値: 今日を含めた直近7日
   const [dateRange, setDateRange] = useState(() => {
@@ -211,6 +212,14 @@ function App() {
       nameJa: firstEvent.country_name_ja || firstEvent.country_name || iso3,
     });
   }, [countryKeyword, sortedEvents]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowIntroToast(false);
+    }, 1800);
+
+    return () => clearTimeout(timer);
+  }, []);
   
   const relatedCountries = useMemo(() => {
     return expandCountryCodes(selectedEvent?.related_countries || "");
@@ -241,7 +250,8 @@ function App() {
   }, [dateFilteredEvents]);
 
   const handleCountryClick = (country) => {
-    
+    setShowIntroToast(false);
+
     const clickedIso3 = String(country?.iso3 || "").toUpperCase().trim();
     if (!clickedIso3) return;
 
@@ -300,13 +310,10 @@ function App() {
 
   if (loading) {
     return (
-      <div className="app">
-        <div className="map-wrapper" />
-        <div className="detail-panel">
-          <h2 className="panel-title">読み込み中...</h2>
-          <p className="panel-message">
-            Supabase からニュースデータを取得しています。
-          </p>
+      <div className="app-status">
+        <div className="app-status-card">
+          <h2>読み込み中です</h2>
+          <p>ニュースデータを取得しています。数秒お待ちください。</p>
         </div>
       </div>
     );
@@ -314,11 +321,10 @@ function App() {
 
   if (loadError) {
     return (
-      <div className="app">
-        <div className="map-wrapper" />
-        <div className="detail-panel">
-          <h2 className="panel-title">データ取得エラー</h2>
-          <p className="panel-message">{loadError}</p>
+      <div className="app-status">
+        <div className="app-status-card error">
+          <h2>データを読み込めませんでした</h2>
+          <p>{loadError}</p>
         </div>
       </div>
     );
@@ -331,6 +337,14 @@ function App() {
         <p>地図から世界のニュースを直感的に理解</p>
       </header>
 
+      {showIntroToast && (
+        <div className="intro-toast">
+          <div className="intro-toast-card">
+            地図の国をクリックすると、その国のニュースを表示できます
+          </div>
+        </div>
+      )}
+
       <div className="app">
         <div className="map-section">
           <MapView
@@ -340,7 +354,7 @@ function App() {
             countryEventCounts={countryEventCounts}
             onCountryClick={handleCountryClick}
             onClearSelection={handleClearSelection}
-            hasSelection={Boolean(selectedCountry || selectedEvent)}
+            hasSelection={Boolean(selectedCountry)}
           />
         </div>
 
@@ -350,7 +364,6 @@ function App() {
             events={sortedEvents}
             selectedEvent={selectedEvent}
             onEventClick={handleEventClick}
-            onClearSelection={handleClearSelection}
             selectedCategory={selectedCategory}
             onCategoryChange={setSelectedCategory}
             sortBy={sortBy}

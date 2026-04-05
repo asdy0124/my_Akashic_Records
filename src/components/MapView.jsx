@@ -200,6 +200,7 @@ function MapView({
 
   return (
     <div className="map-wrapper">
+
       <MapContainer
         center={isMobile ? [22, 10] : [20, 0]}
         zoom={isMobile ? 1.5 : 2}
