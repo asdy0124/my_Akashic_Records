@@ -349,12 +349,13 @@ function App() {
         <div className="map-section">
           <MapView
             selectedCountry={selectedCountry}
+            selectedEvent={selectedEvent}
             relatedCountries={relatedCountries}
             countriesWithArticles={countriesWithArticles}
             countryEventCounts={countryEventCounts}
             onCountryClick={handleCountryClick}
             onClearSelection={handleClearSelection}
-            hasSelection={Boolean(selectedCountry)}
+            hasSelection={Boolean(selectedCountry || selectedEvent)}
           />
         </div>
 

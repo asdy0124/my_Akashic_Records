@@ -1,304 +1,103 @@
-# 🌍 国際情勢マップアプリ 引き継ぎ書（修正フェーズ版）
+# ■ 現在の状況
+React + Leafletで「国際情勢ビュー」アプリを開発中
+
+地図上で
+・選択記事の対象国 → 関連国
+に矢印を描画する機能を実装済み
+
+現在は以下の構成：
+- MapView.jsx で矢印描画
+- GeoJSONから国の中心座標取得
+- selectedEvent.country_iso3 を始点
+- selectedEvent.related_countries を終点（ISO3;区切り）
 
 ---
 
-# ■ 現在の作業フェーズ
+# ■ 現在の問題
+矢印の見た目がイメージと合っていない
 
-UI改善 + 操作性改善（フェーズ5相当）
+現状：
+・Polyline + Polygonで構成
+・線＋三角形の矢印
 
----
-
-# ■ 今回やっている修正内容（超重要）
-
-## ① 右端の空白バグ修正
-
-* スマホ表示で右に余白が出る問題
-* 原因：`min-width` / `overflow` の未指定
-
-対応：
-
-* `.detail-panel`
-* `.detail-mobile-layout`
-* `.news-main-panel`
-
-に対して
-
-```css
-min-width: 0;
-overflow-x: hidden;
-```
-
-を追加
+問題点：
+・近距離で先端が大きすぎる
+・形が不自然（線と先端が分離して見える）
+・「流れ」ではなく「記号」に見える
+・UI的に直感的でない
 
 ---
 
-## ② 国名検索機能の追加（今回のメイン）
+# ■ 目指したい矢印（重要）
+添付画像のような矢印にしたい
 
-### ■ 実装内容
+特徴：
+・帯状（太い1本の流れ）
+・曲線
+・先端まで一体化
+・グレー系で主張しすぎない
+・地図上の「流れ」を表現
 
-「新着順」の下に
-**自由入力の国名検索欄を追加**
-
----
-
-### ■ 追加した state（App.jsx）
-
-```jsx
-const [countryKeyword, setCountryKeyword] = useState("");
-```
+つまり：
+「線」ではなく「面（Polygon）」で描く必要あり
 
 ---
 
-### ■ フィルタ処理（App.jsx）
+# ■ やりたい実装
+現在の矢印ロジックを廃止して、
 
-```jsx
-const countryNameFilteredEvents = useMemo(() => {
-  const keyword = countryKeyword.trim().toLowerCase();
+新しく：
+buildFilledArrowPolygon()
 
-  if (!keyword) return searchedEvents;
+のような関数を作り、
 
-  return searchedEvents.filter((event) => {
-    const countryNameJa = String(event.country_name_ja || "").toLowerCase();
-    const countryName = String(event.country_name || "").toLowerCase();
-    const iso3 = String(event.country_iso3 || "").toLowerCase();
+・中心線（カーブ）を作る
+・左右に幅を持たせる
+・先端まで一体化したポリゴンを生成
+・LeafletのPolygonで描画
 
-    return (
-      countryNameJa.includes(keyword) ||
-      countryName.includes(keyword) ||
-      iso3.includes(keyword)
-    );
-  });
-}, [searchedEvents, countryKeyword]);
-```
+に変更したい
 
 ---
 
-### ■ 並び替え対象変更
+# ■ 現在のコード構成（MapView.jsx）
 
-```jsx
-// 修正前
-[...searchedEvents]
+矢印生成：
+const arrowConnections = useMemo(...)
 
-// 修正後
-[...countryNameFilteredEvents]
-```
+描画：
+{arrowConnections.map(...)}
 
----
+使用関数：
+- buildCurvedArrowPoints()
+- buildArrowHeadPoints()
 
-### ■ DetailPanel に props 追加
-
-```jsx
-countryKeyword={countryKeyword}
-onCountryKeywordChange={setCountryKeyword}
-```
+→ これらは置き換え予定
 
 ---
 
-### ■ DetailPanel.jsx 修正
+# ■ 次にやりたいこと（依頼内容）
 
-#### props追加
+以下を実装したい：
 
-```jsx
-countryKeyword,
-onCountryKeywordChange,
-```
-
----
-
-#### 入力欄追加位置（重要）
-
-```jsx
-<div className="filter-row">
-  （カテゴリ + 新着順）
-</div>
-
-↓この直下に追加
-
-<div className="search-box">
-  <input
-    type="text"
-    className="input"
-    placeholder="国名で検索（例: 日本、アメリカ、中国）"
-    value={countryKeyword}
-    onChange={(e) => onCountryKeywordChange(e.target.value)}
-  />
-</div>
-```
+① Polylineベースの矢印を完全廃止  
+② 添付画像のような「帯状カーブ矢印」をPolygonで描画  
+③ 近距離・遠距離で自然な形になるよう調整  
+④ MapView.jsxにそのまま貼れる完成コードが欲しい  
 
 ---
 
-## ③ 地図の自動移動（重要）
-
-### ■ MapView.jsx 修正
-
-#### 追加 import
-
-```jsx
-import L from "leaflet";
-import { useMap } from "react-leaflet";
-```
+# ■ 補足
+・React + react-leaflet 使用
+・外部ライブラリは増やしたくない
+・初心者なのでコピペで動く形が望ましい
+・実装場所も明確にしてほしい
 
 ---
 
-#### 追加コンポーネント
+# ■ ゴール
+初心者でも見た瞬間に
 
-```jsx
-function MapAutoFocus({ geoData, selectedCountry }) {
-  const map = useMap();
+「どの国とどの国がどう関係しているか」
 
-  useEffect(() => {
-    if (!geoData?.features?.length) return;
-    if (!selectedCountry?.iso3) return;
-
-    const targetIso3 = String(selectedCountry.iso3).toUpperCase().trim();
-
-    const feature = geoData.features.find((item) => {
-      const iso3 = getIso3FromFeature(item);
-      return iso3 === targetIso3;
-    });
-
-    if (!feature) return;
-
-    const layer = L.geoJSON(feature);
-    const bounds = layer.getBounds();
-
-    if (bounds.isValid()) {
-      map.fitBounds(bounds, {
-        padding: [20, 20],
-        maxZoom: 5,
-      });
-    }
-  }, [geoData, selectedCountry, map]);
-
-  return null;
-}
-```
-
----
-
-#### MapContainer内に追加
-
-```jsx
-<TileLayer ... />
-
-{geoData && selectedCountry && (
-  <MapAutoFocus
-    geoData={geoData}
-    selectedCountry={selectedCountry}
-  />
-)}
-```
-
----
-
-## ④ 記事クリック時のバグ修正（超重要）
-
-### ■ 問題
-
-記事クリック時：
-
-* eventは選択される
-* しかし地図の国が変わらない
-
----
-
-### ■ 原因
-
-`selectedCountry` を更新していない
-
----
-
-### ■ 修正（App.jsx）
-
-```jsx
-const handleEventClick = (event) => {
-  if (!event) return;
-
-  const eventIso3 = String(event.country_iso3 || "").toUpperCase().trim();
-
-  if (selectedEvent?.id === event.id) {
-    setSelectedEvent(null);
-    setSelectedCountry(null);
-    return;
-  }
-
-  setSelectedEvent(event);
-
-  if (eventIso3) {
-    setSelectedCountry({
-      iso3: eventIso3,
-      name: event.country_name || event.country_name_ja || eventIso3,
-      nameJa: event.country_name_ja || event.country_name || eventIso3,
-    });
-  }
-};
-```
-
----
-
-## ⑤ 国名入力時にも地図移動
-
-### ■ App.jsx に追加（場所重要）
-
-👉 `const sortedEvents = useMemo(...)` の直下
-
-```jsx
-useEffect(() => {
-  const keyword = countryKeyword.trim();
-
-  if (!keyword) return;
-  if (sortedEvents.length === 0) return;
-
-  const firstEvent = sortedEvents[0];
-  const iso3 = String(firstEvent.country_iso3 || "").toUpperCase().trim();
-
-  if (!iso3) return;
-
-  setSelectedCountry({
-    iso3,
-    name: firstEvent.country_name || firstEvent.country_name_ja || iso3,
-    nameJa: firstEvent.country_name_ja || firstEvent.country_name || iso3,
-  });
-}, [countryKeyword, sortedEvents]);
-```
-
----
-
-# ■ バグ注意（今回発生済み）
-
-## ❌ sortedEvents 内に謎コード混入
-
-```jsx
-selectedCountry={selectedCountry}
-```
-
-👉 即削除（完全バグ）
-
----
-
-# ■ 今後の改善予定
-
-### 次にやるべき
-
-1. 国名サジェスト（オート補完）
-2. 国クリック時のズーム最適化
-3. 関係国クリック連動
-4. SEOページ追加
-
----
-
-# ■ 重要ルール
-
-* CSSは「追加」で対応（上書き）
-* stateは App.jsx に集約
-* MapView は表示専用に近づける
-
----
-
-# ■ 一言
-
-今はかなりいい状態まで来てる。
-「検索 → 選択 → 地図連動」が繋がったので、
-アプリとしての体験は一段上に上がった。
-
----
+が直感的に分かるUIにしたい
