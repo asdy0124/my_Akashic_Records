@@ -22,7 +22,7 @@ function DetailPanel({
   const [activeTab, setActiveTab] = useState("news");
 
   const panelRef = useRef(null);
-  const hasAutoScrolledRef = useRef(false);
+  const restoreRequestRef = useRef(null);
 
   const formatDate = (date) => {
     const d = new Date(date);
@@ -149,14 +149,35 @@ function DetailPanel({
   }, [events]);
 
   useEffect(() => {
-    if (!clearedEventId) {
-      hasAutoScrolledRef.current = false;
-      return;
-    }
+    if (!selectedEvent?.id) return;
+    if (activeTab !== "news") return;
 
+    const panelEl = panelRef.current;
+    if (!panelEl) return;
+
+    const targetEl = panelEl.querySelector(
+      `[data-event-id="${selectedEvent.id}"]`
+    );
+
+    if (!targetEl) return;
+
+    const panelRect = panelEl.getBoundingClientRect();
+    const targetRect = targetEl.getBoundingClientRect();
+
+    restoreRequestRef.current = {
+      eventId: selectedEvent.id,
+      offsetFromPanelTop: targetRect.top - panelRect.top,
+    };
+  }, [selectedEvent, activeTab, events]);
+
+    useEffect(() => {
+    if (!clearedEventId) return;
     if (activeTab !== "news") return;
     if (selectedEvent) return;
-    if (hasAutoScrolledRef.current) return;
+
+    const request = restoreRequestRef.current;
+    if (!request) return;
+    if (request.eventId !== clearedEventId) return;
 
     const panelEl = panelRef.current;
     if (!panelEl) return;
@@ -168,14 +189,16 @@ function DetailPanel({
     if (!targetEl) return;
 
     requestAnimationFrame(() => {
-      targetEl.scrollIntoView({
-        block: "center",
-        behavior: "auto",
-      });
-      hasAutoScrolledRef.current = true;
-    });
-  }, [clearedEventId, events, activeTab, selectedEvent]);
+      const panelRect = panelEl.getBoundingClientRect();
+      const targetRect = targetEl.getBoundingClientRect();
 
+      const currentOffset = targetRect.top - panelRect.top;
+      const diff = currentOffset - request.offsetFromPanelTop;
+
+      panelEl.scrollTop += diff;
+      restoreRequestRef.current = null;
+    });
+  }, [clearedEventId, activeTab, selectedEvent, events]);
 
   const panelTitle = selectedCountry
     ? `${selectedCountry.nameJa || selectedCountry.name} のニュース`
