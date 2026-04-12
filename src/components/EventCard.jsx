@@ -80,7 +80,7 @@ function isValidUrl(url) {
   }
 }
 
-function EventCard({ event, isSelected = false, onClick }) {
+function EventCard({ event, eventId, isSelected = false, onClick }) {
   const category = event.category?.trim();
   const importanceValue = Number(event.importance ?? 0);
 
@@ -103,6 +103,7 @@ function EventCard({ event, isSelected = false, onClick }) {
   return (
     <article
       className={`event-card ${isSelected ? "event-card-selected" : ""}`}
+      data-event-id={eventId}
       onClick={onClick}
       role="button"
       tabIndex={0}

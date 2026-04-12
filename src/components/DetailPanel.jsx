@@ -1,10 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import EventCard from "./EventCard";
 
 function DetailPanel({
   selectedCountry,
   events,
   selectedEvent,
+  clearedEventId,
   onEventClick,
   selectedCategory,
   onCategoryChange,
@@ -19,6 +20,9 @@ function DetailPanel({
 }) {
   const categories = ["すべて", "外交", "軍事", "経済"];
   const [activeTab, setActiveTab] = useState("news");
+
+  const panelRef = useRef(null);
+  const hasAutoScrolledRef = useRef(false);
 
   const formatDate = (date) => {
     const d = new Date(date);
@@ -144,6 +148,35 @@ function DetailPanel({
     };
   }, [events]);
 
+  useEffect(() => {
+    if (!clearedEventId) {
+      hasAutoScrolledRef.current = false;
+      return;
+    }
+
+    if (activeTab !== "news") return;
+    if (selectedEvent) return;
+    if (hasAutoScrolledRef.current) return;
+
+    const panelEl = panelRef.current;
+    if (!panelEl) return;
+
+    const targetEl = panelEl.querySelector(
+      `[data-event-id="${clearedEventId}"]`
+    );
+
+    if (!targetEl) return;
+
+    requestAnimationFrame(() => {
+      targetEl.scrollIntoView({
+        block: "center",
+        behavior: "auto",
+      });
+      hasAutoScrolledRef.current = true;
+    });
+  }, [clearedEventId, events, activeTab, selectedEvent]);
+
+
   const panelTitle = selectedCountry
     ? `${selectedCountry.nameJa || selectedCountry.name} のニュース`
     : "国際情勢ニュース一覧";
@@ -153,7 +186,7 @@ function DetailPanel({
     : "世界の今週まとめ";
 
 return (
-  <div className="detail-panel">
+  <div className="detail-panel" ref={panelRef}>
     <div className="detail-mobile-layout">
       <div className="date-panel">
         <div className="date-title">表示期間</div>
@@ -220,11 +253,15 @@ return (
           <>
             <h2 className="panel-title-mobile">{panelTitle}</h2>
 
-            {selectedEvent && (
-              <div className="related-info">
-                関連国を表示中（イベント選択中）
-              </div>
-            )}
+            <div
+              className={`related-info ${
+                selectedEvent ? "related-info-active" : "related-info-idle"
+              }`}
+            >
+              {selectedEvent
+                ? "関連国を表示中（イベント選択中）"
+                : "イベント未選択"}
+            </div>
 
             {summaryData.total > 0 && (
               <div className="summary-card">
@@ -289,11 +326,12 @@ return (
           events.length === 0 ? (
             <p>該当する記事がありません。</p>
           ) : (
-            events.map((event, index) => (
+            events.map((event) => (
               <EventCard
-                key={index}
+                key={event.id}
                 event={event}
-                isSelected={selectedEvent === event}
+                eventId={event.id}
+                isSelected={selectedEvent?.id === event.id}
                 onClick={() => onEventClick(event)}
               />
             ))

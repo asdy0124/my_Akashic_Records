@@ -12,6 +12,7 @@ function App() {
   const [events, setEvents] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [clearedEventId, setClearedEventId] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("すべて");
   const [sortBy, setSortBy] = useState("date");
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -282,6 +283,7 @@ function App() {
   };
 
   const handleClearSelection = () => {
+    setClearedEventId(selectedEvent?.id ?? null);
     setSelectedCountry(null);
     setSelectedEvent(null);
   };
@@ -364,6 +366,7 @@ function App() {
             selectedCountry={selectedCountry}
             events={sortedEvents}
             selectedEvent={selectedEvent}
+            clearedEventId={clearedEventId}
             onEventClick={handleEventClick}
             selectedCategory={selectedCategory}
             onCategoryChange={setSelectedCategory}
