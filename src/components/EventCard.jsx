@@ -148,10 +148,12 @@ function EventCard({ event, eventId, isSelected = false, onClick }) {
           </span>
         </div>
 
-        <div className="meta-row">
-          <span className="meta-label">影響</span>
-          <span className="meta-value">{event.impact_summary || "記載なし"}</span>
-        </div>
+        {event.impact_summary?.trim() && (
+          <div className="meta-row">
+            <span className="meta-label">ニュースのポイントと影響</span>
+            <span className="meta-value">{event.impact_summary}</span>
+          </div>
+        )}
 
         {(sourceName || isValidUrl(sourceUrl)) && (
           <div className="meta-row">

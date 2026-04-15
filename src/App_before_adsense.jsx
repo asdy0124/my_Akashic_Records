@@ -335,21 +335,8 @@ function App() {
   return (
     <div className="page">
       <header className="page-header">
-        <div className="page-header-top">
-          <div className="page-header-brand">
-            <h1>国際情勢ビューア</h1>
-            <p>地図から世界のニュースを直感的に理解</p>
-          </div>
-
-          <div className="page-header-actions">
-            <a
-              href="/about.html"
-              className="header-about-link"
-            >
-              このサイトについて
-            </a>
-          </div>
-        </div>
+        <h1>国際情勢ビューア</h1>
+        <p>地図から世界のニュースを直感的に理解</p>
       </header>
 
       {showIntroToast && (
@@ -393,11 +380,6 @@ function App() {
             onDateRangeChange={setDateRange}
           />
         </div>
-        <footer className="site-footer">
-          <a href="/privacy.html">プライバシーポリシー</a>
-          <a href="/terms.html">利用規約</a>
-          <a href="/contact.html">お問い合わせ</a>
-        </footer>
       </div>
     </div>
   );

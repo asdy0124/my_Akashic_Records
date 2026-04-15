@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import EventCard from "./EventCard";
-import AdsenseSlot from "./AdsenseSlot";
 
 function DetailPanel({
   selectedCountry,
@@ -209,30 +208,6 @@ function DetailPanel({
     ? `${selectedCountry.nameJa || selectedCountry.name} の今週まとめ`
     : "世界の今週まとめ";
 
-  const newsItemsWithAds = useMemo(() => {
-    const items = [];
-
-    events.forEach((event, index) => {
-      items.push({
-        type: "event",
-        id: `event-${event.id}`,
-        event,
-      });
-
-      const isEveryThird = (index + 1) % 3 === 0;
-      const isNotLast = index !== events.length - 1;
-
-      if (isEveryThird && isNotLast) {
-        items.push({
-          type: "ad",
-          id: `ad-after-${event.id}`,
-        });
-      }
-    });
-
-    return items;
-  }, [events]);
-
 return (
   <div className="detail-panel" ref={panelRef}>
     <div className="detail-mobile-layout">
@@ -374,34 +349,15 @@ return (
           events.length === 0 ? (
             <p>該当する記事がありません。</p>
           ) : (
-            newsItemsWithAds.map((item) => {
-              if (item.type === "ad") {
-                return (
-                  <div key={item.id} className="infeed-ad-wrap" aria-label="広告">
-                    <AdsenseSlot
-                      className="infeed-ad-slot"
-                      slot="2385861500"
-                      format="fluid"
-                      responsive="true"
-                      style={{ width: "100%" }}
-                      layout="in-article"
-                    />
-                  </div>
-                );
-              }
-
-              const event = item.event;
-
-              return (
-                <EventCard
-                  key={item.id}
-                  event={event}
-                  eventId={event.id}
-                  isSelected={selectedEvent?.id === event.id}
-                  onClick={() => onEventClick(event)}
-                />
-              );
-            })
+            events.map((event) => (
+              <EventCard
+                key={event.id}
+                event={event}
+                eventId={event.id}
+                isSelected={selectedEvent?.id === event.id}
+                onClick={() => onEventClick(event)}
+              />
+            ))
           )
         ) : events.length === 0 ? (
           <p>この期間にまとめ対象の出来事はありません。</p>
