@@ -3,6 +3,8 @@ import "./App.css";
 import MapView from "./components/MapView";
 import DetailPanel from "./components/DetailPanel";
 import { supabase } from "./lib/supabase";
+import { useLocation, useNavigate } from "react-router-dom";
+import { amazonBooks } from "./data/amazonBooks";
 import {
   expandCountryCodes,
   includesCountryCode,
@@ -20,6 +22,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
   const [showIntroToast, setShowIntroToast] = useState(true);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // 初期値: 今日を含めた直近7日
   const [dateRange, setDateRange] = useState(() => {
@@ -60,10 +64,12 @@ function App() {
           "不明",
         title: row.title || "タイトル未設定",
         summary: row.summary || "",
+        background: row.background || "",
+        impact: row.impact || "",
+        future: row.future || "",
         detail: row.detail || "",
         related_countries: row.related_countries || "",
-        impact_summary: row.impact_summary || "",
-        category: row.category || "その他",
+        impact_summary: row.impact_summary || "",        category: row.category || "その他",
         event_date: row.event_date || "",
         source_name: row.source_name || "",
         source_url: row.source_url || "",
@@ -85,6 +91,9 @@ function App() {
           country_name_ja,
           title,
           summary,
+          background,
+          impact,
+          future,
           detail,
           related_countries,
           impact_summary,
@@ -195,6 +204,70 @@ function App() {
     );
   }, [countryNameFilteredEvents, sortBy]);
 
+  const routeNewsId = useMemo(() => {
+    const match = location.pathname.match(/^\/news\/([^/]+)$/);
+    return match ? decodeURIComponent(match[1]) : null;
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!routeNewsId) return;
+    if (events.length === 0) return;
+
+    const targetEvent = events.find(
+      (event) => String(event.id) === String(routeNewsId)
+    );
+
+    if (!targetEvent) return;
+
+    setSelectedEvent(targetEvent);
+
+    const eventIso3 = String(targetEvent.country_iso3 || "")
+      .toUpperCase()
+      .trim();
+
+    if (eventIso3) {
+      setSelectedCountry({
+        iso3: eventIso3,
+        name: targetEvent.country_name || targetEvent.country_name_ja || eventIso3,
+        nameJa: targetEvent.country_name_ja || targetEvent.country_name || eventIso3,
+      });
+    }
+  }, [routeNewsId, events]);
+
+  useEffect(() => {
+    if (selectedEvent && routeNewsId) {
+      document.title = `${selectedEvent.title} | 国際情勢ビューア`;
+      return;
+    }
+
+    document.title = "国際情勢を地図で理解 | 国際情勢ビューア";
+  }, [selectedEvent, routeNewsId]);
+
+  useEffect(() => {
+    let descriptionTag = document.querySelector('meta[name="description"]');
+  
+    if (!descriptionTag) {
+      descriptionTag = document.createElement("meta");
+      descriptionTag.setAttribute("name", "description");
+      document.head.appendChild(descriptionTag);
+    }
+
+    if (selectedEvent && routeNewsId) {
+      const descriptionText =
+        selectedEvent.summary ||
+        selectedEvent.impact_summary ||
+        "世界のニュースを地図から直感的に理解できる国際情勢ビューア。";
+
+      descriptionTag.setAttribute("content", descriptionText);
+      return;
+    }
+
+    descriptionTag.setAttribute(
+      "content",
+      "世界のニュースを地図から直感的に理解できる国際情勢ビューア。国別の出来事、関連国、注目ニュースをわかりやすく確認できます。"
+    );
+  }, [selectedEvent, routeNewsId]);
+
   // 👇ここに追加（この行の真下）
   useEffect(() => {
     const keyword = countryKeyword.trim();
@@ -286,6 +359,7 @@ function App() {
     setClearedEventId(selectedEvent?.id ?? null);
     setSelectedCountry(null);
     setSelectedEvent(null);
+    navigate("/");
   };
 
   const handleEventClick = (event) => {
@@ -308,6 +382,27 @@ function App() {
         nameJa: event.country_name_ja || event.country_name || eventIso3,
       });
     }
+  };
+  const handleOpenEventDetail = (event) => {
+    if (!event) return;
+
+    setSelectedEvent(event);
+
+    const eventIso3 = String(event.country_iso3 || "").toUpperCase().trim();
+
+    if (eventIso3) {
+      setSelectedCountry({
+        iso3: eventIso3,
+        name: event.country_name || event.country_name_ja || eventIso3,
+        nameJa: event.country_name_ja || event.country_name || eventIso3,
+      });
+    }
+
+    navigate(`/news/${encodeURIComponent(event.id)}`);
+  };
+
+  const handleCloseEventDetail = () => {
+    navigate("/");
   };
 
   if (loading) {
@@ -332,6 +427,68 @@ function App() {
     );
   }
 
+  const getIso3List = (value) => {
+    if (!value) return [];
+
+    if (Array.isArray(value)) {
+      return value
+        .map((item) => String(item).toUpperCase().trim())
+        .filter(Boolean);
+    }
+
+    return String(value)
+      .split(/[;,]/)
+      .map((item) => item.toUpperCase().trim())
+      .filter(Boolean);
+  };
+
+  const selectedEventIso3List = selectedEvent
+    ? getIso3List(selectedEvent.country_iso3)
+    : [];
+
+  const relatedAmazonBooks = selectedEvent
+    ? amazonBooks
+        .filter((book) => {
+          const bookIso3List = getIso3List(book.countryIso3);
+
+          const sameCountry = bookIso3List.some((bookIso3) =>
+            selectedEventIso3List.includes(bookIso3)
+          );
+
+          const sameCategory =
+            book.category &&
+            book.category !== "default" &&
+            book.category === selectedEvent.category;
+
+          return sameCountry || sameCategory;
+        })
+        .sort((a, b) => {
+          const aCountryMatch = getIso3List(a.countryIso3).some((bookIso3) =>
+            selectedEventIso3List.includes(bookIso3)
+          );
+
+          const bCountryMatch = getIso3List(b.countryIso3).some((bookIso3) =>
+            selectedEventIso3List.includes(bookIso3)
+          );
+
+          if (aCountryMatch && !bCountryMatch) return -1;
+          if (!aCountryMatch && bCountryMatch) return 1;
+          return 0;
+        })
+        .slice(0, 3)
+    : [];
+
+  const fallbackAmazonBook = amazonBooks.find(
+    (book) => book.category === "default"
+  );
+
+  const displayAmazonBooks =
+    relatedAmazonBooks.length > 0
+      ? relatedAmazonBooks
+      : fallbackAmazonBook
+        ? [fallbackAmazonBook]
+        : [];
+        
   return (
     <div className="page">
       <header className="page-header">
@@ -342,15 +499,31 @@ function App() {
           </div>
 
           <div className="page-header-actions">
-            <a
-              href="/about.html"
-              className="header-about-link"
-            >
-              このサイトについて
-            </a>
           </div>
         </div>
       </header>
+
+      <section className="top-description top-description-title-only">
+        <details>
+          <summary>このサイトについて</summary>
+
+          <p>
+            国際情勢ビューアは、世界各地のニュースを地図上で確認できる情報整理サイトです。
+            国ごとの出来事や関連する地域を、視覚的にわかりやすく把握できます。
+          </p>
+
+          <p>
+            本サイトでは、国際ニュースを単に一覧で表示するだけでなく、
+            出来事の場所、関連国、重要度、カテゴリを整理し、
+            世界で起きている動きを俯瞰しやすい形で表示しています。
+          </p>
+
+          <p>
+            各ニュースには出典情報を表示し、必要に応じて元記事を確認できるようにしています。
+            国際情勢を短時間で把握したい方や、複数地域の動きを比較したい方に向けたサービスです。
+          </p>
+        </details>
+      </section>
 
       {showIntroToast && (
         <div className="intro-toast">
@@ -381,6 +554,7 @@ function App() {
             selectedEvent={selectedEvent}
             clearedEventId={clearedEventId}
             onEventClick={handleEventClick}
+            onEventDetailClick={handleOpenEventDetail}
             selectedCategory={selectedCategory}
             onCategoryChange={setSelectedCategory}
             sortBy={sortBy}
@@ -393,14 +567,113 @@ function App() {
             onDateRangeChange={setDateRange}
           />
         </div>
-        <footer className="site-footer">
+      </div>
+              <footer className="site-footer">
           <a href="/privacy.html">プライバシーポリシー</a>
           <a href="/terms.html">利用規約</a>
           <a href="/contact.html">お問い合わせ</a>
         </footer>
+
+              {selectedEvent && routeNewsId && (
+  <div
+    className="modal-overlay"
+    onClick={handleCloseEventDetail}
+  >
+    <article
+      className="news-modal"
+      onClick={(event) => event.stopPropagation()}
+    >
+      <button
+        type="button"
+        className="modal-close-button"
+        onClick={handleCloseEventDetail}
+      >
+        ×
+      </button>
+
+      <div className="news-modal-meta">
+        <span>{selectedEvent.country_name_ja || selectedEvent.country_name}</span>
+        <span>{selectedEvent.event_date}</span>
+        <span>{selectedEvent.category}</span>
       </div>
+
+      <h1>{selectedEvent.title}</h1>
+
+      <section className="news-modal-section">
+        <h2>概要</h2>
+        <p>{selectedEvent.summary}</p>
+      </section>
+
+      {(selectedEvent.background?.trim() || selectedEvent.detail?.trim()) && (
+        <section className="news-modal-section">
+          <h2>背景</h2>
+          <p>{selectedEvent.background || selectedEvent.detail}</p>
+        </section>
+      )}
+
+      {(selectedEvent.impact?.trim() || selectedEvent.impact_summary?.trim()) && (
+        <section className="news-modal-section">
+          <h2>影響</h2>
+          <p>{selectedEvent.impact || selectedEvent.impact_summary}</p>
+        </section>
+      )}
+
+      {selectedEvent.future?.trim() && (
+        <section className="news-modal-section">
+          <h2>今後の注目点</h2>
+          <p>{selectedEvent.future}</p>
+        </section>
+      )}
+
+      {(selectedEvent.source_name || selectedEvent.source_url) && (
+        <div className="news-modal-source">
+          <span>出典：</span>
+
+          {selectedEvent.source_url ? (
+            <a
+              href={selectedEvent.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {selectedEvent.source_name || "元記事を見る"}
+            </a>
+          ) : (
+            <span>{selectedEvent.source_name}</span>
+          )}
+        </div>
+      )}
+
+      {displayAmazonBooks.length > 0 && (
+        <div className="amazon-associate-box">
+          <h2>関連書籍</h2>
+
+          <div className="amazon-book-list">
+            {displayAmazonBooks.map((book) => (
+              <a
+                key={book.id}
+                href={book.url}
+                target="_blank"
+                rel="noopener noreferrer sponsored"
+                className="amazon-book-link"
+              >
+                <span className="amazon-book-title">{book.title}</span>
+                <span className="amazon-book-description">{book.description}</span>
+              </a>
+            ))}
+          </div>
+
+          <p className="amazon-associate-note">
+            Amazonのアソシエイトとして、国際情勢ビューアは適格販売により収入を得ています。
+          </p>
+        </div>
+      )}
+          </article>
+        </div>
+      )}
+
     </div>
   );
 }
 
 export default App;
+

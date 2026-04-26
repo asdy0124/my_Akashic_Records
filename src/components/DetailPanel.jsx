@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import EventCard from "./EventCard";
-import AdsenseSlot from "./AdsenseSlot";
-
+import AdsenseSlot, { INFEED_AD_ENABLED } from "./AdsenseSlot";
 function DetailPanel({
   selectedCountry,
   events,
   selectedEvent,
   clearedEventId,
   onEventClick,
+  onEventDetailClick,
   selectedCategory,
   onCategoryChange,
   sortBy,
@@ -219,6 +219,14 @@ function DetailPanel({
         event,
       });
 
+      // 👇ここ追加（2件目の後に広告）
+      if (index === 1) {
+        items.push({
+          type: "ad",
+          id: "ad-first",
+        });
+      }
+
       const isEveryThird = (index + 1) % 3 === 0;
       const isNotLast = index !== events.length - 1;
 
@@ -376,6 +384,10 @@ return (
           ) : (
             newsItemsWithAds.map((item) => {
               if (item.type === "ad") {
+                if (!INFEED_AD_ENABLED) {
+                  return null;
+                }
+
                 return (
                   <div key={item.id} className="infeed-ad-wrap" aria-label="広告">
                     <AdsenseSlot
@@ -399,6 +411,7 @@ return (
                   eventId={event.id}
                   isSelected={selectedEvent?.id === event.id}
                   onClick={() => onEventClick(event)}
+                  onDetailClick={() => onEventDetailClick(event)}
                 />
               );
             })

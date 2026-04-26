@@ -80,7 +80,13 @@ function isValidUrl(url) {
   }
 }
 
-function EventCard({ event, eventId, isSelected = false, onClick }) {
+function EventCard({
+  event,
+  eventId,
+  isSelected = false,
+  onClick,
+  onDetailClick,
+}) {
   const category = event.category?.trim();
   const importanceValue = Number(event.importance ?? 0);
 
@@ -155,26 +161,18 @@ function EventCard({ event, eventId, isSelected = false, onClick }) {
           </div>
         )}
 
-        {(sourceName || isValidUrl(sourceUrl)) && (
-          <div className="meta-row">
-            <span className="meta-label">出典</span>
-            <div className="meta-value source-block">
-              {sourceName && <span className="source-name">{sourceName}</span>}
-
-              {isValidUrl(sourceUrl) && (
-                <a
-                  className="source-link"
-                  href={sourceUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  記事を見る
-                </a>
-              )}
-            </div>
-          </div>
-        )}
+        <div className="event-detail-button-row">
+          <button
+            type="button"
+            className="event-detail-button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDetailClick?.();
+            }}
+          >
+            詳細を見る
+          </button>
+        </div>
       </div>
     </article>
   );

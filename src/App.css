@@ -2009,30 +2009,269 @@ body,
 }
 
 .site-footer {
+  flex: 0 0 auto;
   width: 100%;
-  padding: 8px 0; /* ←ここ減らす */
+  padding: 8px 0 10px;
   text-align: center;
-  font-size: 12px; /* ←少し小さく */
+  font-size: 12px;
   color: #64748b;
 }
 
 .site-footer a {
-  margin: 0 6px; /* ←間隔少し詰める */
+  margin: 0 6px;
   color: #2563eb;
   text-decoration: none;
-  white-space: nowrap; /* ←改行防止 */
+  white-space: nowrap;
 }
 
 .site-footer a:hover {
   text-decoration: underline;
 }
+
 @media (max-width: 768px) {
   .site-footer {
-    padding: 6px 0;
+    padding: 6px 0 8px;
     font-size: 11px;
   }
 
   .site-footer a {
     margin: 0 4px;
   }
+}
+/* =========================
+   トップ説明文：タイトルだけ常時表示
+========================= */
+.top-description-title-only {
+  margin: 4px 16px 6px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.top-description-title-only details {
+  margin: 0;
+}
+
+.top-description-title-only summary {
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  padding: 4px 0;
+  color: #0f172a;
+  font-size: 0.88rem;
+  font-weight: 800;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.top-description-title-only summary::marker {
+  color: #64748b;
+}
+
+.top-description-title-only p {
+  margin: 8px 0 0;
+  padding: 0;
+  color: #475569;
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+.top-description-title-only details[open] {
+  padding: 10px 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+}
+
+@media (max-width: 768px) {
+  .top-description-title-only {
+    margin: 2px 8px 4px;
+  }
+
+  .top-description-title-only summary {
+    padding: 2px 0;
+    font-size: 0.78rem;
+  }
+
+  .top-description-title-only p {
+    font-size: 0.76rem;
+    line-height: 1.55;
+  }
+
+  .top-description-title-only details[open] {
+    padding: 8px 10px;
+  }
+}
+
+
+/* =========================
+   記事詳細本文
+========================= */
+.article-detail-sections {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0 14px;
+  padding-top: 12px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.article-detail-section {
+  padding: 10px 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.article-detail-section h4 {
+  margin: 0 0 6px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.article-detail-section p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: #334155;
+}
+
+@media (max-width: 768px) {
+  .article-detail-sections {
+    gap: 8px;
+    margin: 10px 0 12px;
+    padding-top: 10px;
+  }
+
+  .article-detail-section {
+    padding: 9px 10px;
+    border-radius: 9px;
+  }
+
+  .article-detail-section h4 {
+    font-size: 0.82rem;
+  }
+
+  .article-detail-section p {
+    font-size: 0.84rem;
+    line-height: 1.6;
+  }
+}
+
+/* =========================
+   記事一覧：詳細を見るボタン
+========================= */
+.event-detail-button-row {
+  display: flex;
+  justify-content: flex-start;
+  padding-top: 2px;
+}
+
+.event-detail-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #93c5fd;
+  background: #ffffff;
+  color: #2563eb;
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.event-detail-button:hover {
+  background: #dbeafe;
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .event-detail-button {
+    padding: 7px 11px;
+    font-size: 0.8rem;
+  }
+}
+
+/* =========================
+   記事間広告ラベル
+========================= */
+.ad-label {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.imobile-ad-body {
+  width: 100%;
+  min-height: 90px;
+}
+/* =========================
+   Amazon関連書籍リスト
+========================= */
+.amazon-associate-box {
+  margin-top: 18px !important;
+  padding-top: 16px !important;
+  border-top: 1px solid #e2e8f0 !important;
+}
+
+.amazon-associate-box h2 {
+  margin: 0 0 10px !important;
+  color: #0f172a !important;
+  font-size: 1rem !important;
+  font-weight: 800 !important;
+}
+
+.amazon-book-list {
+  display: grid !important;
+  gap: 10px !important;
+}
+
+.amazon-book-link {
+  display: block !important;
+  padding: 12px !important;
+  border: 1px solid #f59e0b !important;
+  border-radius: 12px !important;
+  background: #fffbeb !important;
+  color: #0f172a !important;
+  text-decoration: none !important;
+}
+
+.amazon-book-link:hover {
+  background: #fef3c7 !important;
+  text-decoration: none !important;
+}
+
+.amazon-book-title {
+  display: block !important;
+  margin-bottom: 4px !important;
+  color: #92400e !important;
+  font-size: 0.9rem !important;
+  font-weight: 800 !important;
+  line-height: 1.5 !important;
+}
+
+.amazon-book-description {
+  display: block !important;
+  color: #475569 !important;
+  font-size: 0.82rem !important;
+  line-height: 1.6 !important;
+}
+
+.amazon-associate-note {
+  margin-top: 10px !important;
+  color: #64748b !important;
+  font-size: 0.75rem !important;
+  line-height: 1.5 !important;
 }

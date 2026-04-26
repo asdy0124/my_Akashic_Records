@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 
+export const INFEED_AD_ENABLED = false;
+
 function AdsenseSlot({
   className = "",
   slot,
@@ -9,32 +11,28 @@ function AdsenseSlot({
   layout = "",
   layoutKey = "",
 }) {
-  const pushedRef = useRef(false);
+  const adRef = useRef(null);
 
   useEffect(() => {
-    if (pushedRef.current) return;
+    if (!INFEED_AD_ENABLED) return;
+    if (!adRef.current) return;
 
-    try {
-      if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
-        window.adsbygoogle.push({});
-        pushedRef.current = true;
-      }
-    } catch (error) {
-      console.error("AdSense表示エラー:", error);
-    }
+    // i-mobile承認後、ここに広告タグをReact用に入れる
+    // 承認前は何もしない
   }, []);
 
+  if (!INFEED_AD_ENABLED) {
+    return null;
+  }
+
   return (
-    <div className={className}>
-      <ins
-        className="adsbygoogle"
-        style={{ display: "block", ...style }}
-        data-ad-client="ca-pub-5791768646198109"
-        data-ad-slot={slot}
-        data-ad-format={format}
-        data-full-width-responsive={responsive}
-        {...(layout ? { "data-ad-layout": layout } : {})}
-        {...(layoutKey ? { "data-ad-layout-key": layoutKey } : {})}
+    <div className={className} style={style}>
+      <div className="ad-label">広告</div>
+
+      <div
+        ref={adRef}
+        className="imobile-ad-body"
+        aria-label="i-mobile広告枠"
       />
     </div>
   );

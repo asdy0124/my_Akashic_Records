@@ -1,0 +1,195 @@
+# 📘 広告実装（AdSense前の収益化）引き継ぎ書
+
+---
+
+## ■ 目的
+
+AdSense審査通過までの間、
+**サイトの収益化を開始する**
+
+---
+
+## ■ 基本方針
+
+① 審査が緩い広告で即収益化
+② UXを壊さない配置
+③ 将来的にAdSenseへ移行
+
+---
+
+## ■ 使用する広告（優先順）
+
+---
+
+### ■ ① i-mobile（最優先）
+
+### 特徴
+
+* 日本向け広告が強い
+* 審査ゆるめ
+* 自動広告あり
+
+### 向いている理由
+
+* 日本語サイト
+* ニュース系
+
+---
+
+### ■ ② 忍者AdMax
+
+### 特徴
+
+* 審査ほぼなし
+* 即掲載可能
+
+### デメリット
+
+* 単価低め
+
+---
+
+### ■ ③ もしもアフィリエイト
+
+### 特徴
+
+* Amazon / 楽天をまとめて使える
+* 初心者向け
+
+---
+
+### ■ ④ Amazonアソシエイト
+
+### 使い方
+
+ニュースに関連する本を表示
+
+例：
+「国際政治の本を見る」
+
+---
+
+## ■ 推奨広告構成
+
+```text
+① 記事一覧の間 → i-mobile
+② モーダル下部 → Amazonリンク
+③ サイド or 下部 → 忍者AdMax
+```
+
+---
+
+## ■ 実装①：記事間広告（i-mobile / 忍者）
+
+### 挿入場所
+
+EventCardの間
+
+---
+
+### JSX例
+
+```jsx
+{events.map((event, index) => (
+  <>
+    <EventCard event={event} />
+
+    {index % 5 === 0 && (
+      <div className="infeed-ad-wrap">
+        <div id="ad-slot"></div>
+      </div>
+    )}
+  </>
+))}
+```
+
+---
+
+### 広告タグ（例）
+
+```html
+<script src="https://adm.shinobi.jp/s/XXXX"></script>
+```
+
+---
+
+## ■ 実装②：モーダル内広告
+
+### 設置位置
+
+記事の最後
+
+---
+
+```jsx
+<h2>関連情報</h2>
+
+<a href="https://amzn.to/xxxxx" target="_blank">
+  国際政治の関連書籍を見る
+</a>
+```
+
+---
+
+## ■ 実装③：下部広告
+
+```jsx
+<div className="footer-ad">
+  <script src="https://adm.shinobi.jp/s/XXXX"></script>
+</div>
+```
+
+---
+
+## ■ CSS（既存に追加）
+
+```css
+.infeed-ad-wrap {
+  width: 100%;
+  margin: 16px 0;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.footer-ad {
+  margin-top: 20px;
+  text-align: center;
+}
+```
+
+---
+
+## ■ 注意事項
+
+* 広告入れすぎない（UX崩壊）
+* モーダルの邪魔をしない
+* 不審な広告は避ける
+
+---
+
+## ■ やってはいけない
+
+❌ 画面の大半が広告
+❌ 誤クリック誘導
+❌ ポップアップ広告多用
+
+---
+
+## ■ 今後の流れ
+
+① 広告導入（i-mobile + 忍者）
+② コンテンツ改善（AdSense対策）
+③ AdSense再申請
+④ AdSenseに切替
+
+---
+
+## ■ 最終目標
+
+短期：月数百円〜数千円
+中期：AdSense合格
+長期：広告 + アフィリエイト併用
+
+---
