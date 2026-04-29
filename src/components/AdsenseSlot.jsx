@@ -26,7 +26,7 @@ const IMOBILE_AD_SLOTS = [
 let imobileScriptPromise = null;
 
 const loadImobileScript = () => {
-  if (window.Imobile?.Native?.PC?.showAds) {
+  if (window.IMobile?.Native?.PC?.showAds) {
     return Promise.resolve();
   }
 
@@ -88,9 +88,9 @@ useEffect(() => {
   loadImobileScript()
     .then(() => {
       console.log("i-mobile: script loaded");
-      console.log("i-mobile object", window.Imobile);
+      console.log("i-mobile object", window.IMobile);
 
-      if (!window.Imobile?.Native?.PC?.showAds) {
+      if (!window.IMobile?.Native?.PC?.showAds) {
         console.log("i-mobile: showAds not found");
         return;
       }
@@ -101,7 +101,7 @@ console.log("i-mobile: before showAds", {
   containerId: adSlot.containerId,
 });
 
-window.Imobile.Native.PC.showAds({
+window.IMobile.Native.PC.showAds({
   pid: adSlot.pid,
   asid: adSlot.asid,
 });
