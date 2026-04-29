@@ -2,10 +2,13 @@ import { useEffect, useRef } from "react";
 
 export const INFEED_AD_ENABLED = true;
 
-const IMOBILE_SCRIPT_SRC =
+const PC_SCRIPT_SRC =
   "https://spdeliver.i-mobile.co.jp/script/adsnativepc.js?20101001";
 
-const IMOBILE_AD_SLOTS = [
+const SP_SCRIPT_SRC =
+  "https://spad.i-mobile.co.jp/script/adsnativesp.js?20101001";
+
+const PC_AD_SLOTS = [
   {
     containerId: "imobile_ad_native_59243720260427200322",
     pid: "84841",
@@ -23,121 +26,147 @@ const IMOBILE_AD_SLOTS = [
   },
 ];
 
-let imobileScriptPromise = null;
+const SP_AD_SLOTS = [
+  {
+    containerId: "imobile_ad_native_59243820260429232543",
+    pid: "84841",
+    asid: "1929834",
+  },
+  {
+    containerId: "imobile_ad_native_59243820260429232645",
+    pid: "84841",
+    asid: "1929835",
+  },
+];
 
-const loadImobileScript = () => {
-  if (window.IMobile?.Native?.PC?.showAds) {
+export const getIsMobileAdView = () => {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(max-width: 768px)").matches;
+};
+
+export const getInfeedAdPositions = () => {
+  if (getIsMobileAdView()) {
+    // スマホは2枠だけ
+    return [0, 3];
+  }
+
+  // PCは3枠
+  return [0, 3, 6];
+};
+
+let pcScriptPromise = null;
+let spScriptPromise = null;
+
+const loadScript = (src, type) => {
+  const isLoaded =
+    type === "sp"
+      ? window.IMobile?.Native?.SP?.showAds
+      : window.IMobile?.Native?.PC?.showAds;
+
+  if (isLoaded) {
     return Promise.resolve();
   }
 
-  if (imobileScriptPromise) {
-    return imobileScriptPromise;
+  if (type === "sp" && spScriptPromise) {
+    return spScriptPromise;
   }
 
-  imobileScriptPromise = new Promise((resolve, reject) => {
+  if (type === "pc" && pcScriptPromise) {
+    return pcScriptPromise;
+  }
+
+  const promise = new Promise((resolve, reject) => {
     const script = document.createElement("script");
     script.type = "text/javascript";
-    script.src = IMOBILE_SCRIPT_SRC;
+    script.src = src;
     script.async = true;
 
     script.onload = () => resolve();
-    script.onerror = () => reject(new Error("i-mobile広告スクリプトの読み込みに失敗しました"));
+    script.onerror = () =>
+      reject(new Error(`i-mobile広告スクリプトの読み込みに失敗しました: ${src}`));
 
     document.body.appendChild(script);
   });
 
-  return imobileScriptPromise;
+  if (type === "sp") {
+    spScriptPromise = promise;
+  } else {
+    pcScriptPromise = promise;
+  }
+
+  return promise;
 };
 
-function AdsenseSlot({
-  className = "",
-  style = {},
-  adIndex = 0,
-}) {
+function AdsenseSlot({ className = "", style = {}, adIndex = 0 }) {
   const adRef = useRef(null);
 
-useEffect(() => {
-  if (!INFEED_AD_ENABLED) {
-    console.log("i-mobile: disabled");
-    return;
-  }
+  useEffect(() => {
+    if (!INFEED_AD_ENABLED) return;
+    if (!adRef.current) return;
 
-  if (!adRef.current) {
-    console.log("i-mobile: adRef is null");
-    return;
-  }
+    const isMobile = getIsMobileAdView();
+    const adType = isMobile ? "sp" : "pc";
+    const adSlots = isMobile ? SP_AD_SLOTS : PC_AD_SLOTS;
+    const scriptSrc = isMobile ? SP_SCRIPT_SRC : PC_SCRIPT_SRC;
+    const adSlot = adSlots[adIndex];
 
-  const adSlot = IMOBILE_AD_SLOTS[adIndex];
+    const adWrap = adRef.current.closest(".infeed-ad-wrap");
 
-  console.log("i-mobile: adIndex", adIndex);
-  console.log("i-mobile: adSlot", adSlot);
+    if (!adSlot) {
+      if (adWrap) adWrap.style.display = "none";
+      return;
+    }
 
-  if (!adSlot) {
-    console.log("i-mobile: no adSlot");
-    return;
-  }
+    if (adWrap) adWrap.style.display = "";
 
-  adRef.current.innerHTML = "";
+    adRef.current.innerHTML = "";
 
-  const adContainer = document.createElement("div");
-  adContainer.id = adSlot.containerId;
-  adRef.current.appendChild(adContainer);
+    const adContainer = document.createElement("div");
+    adContainer.id = adSlot.containerId;
+    adRef.current.appendChild(adContainer);
 
-  console.log("i-mobile: created container", adContainer.id);
+    loadScript(scriptSrc, adType)
+      .then(() => {
+        const showAds =
+          adType === "sp"
+            ? window.IMobile?.Native?.SP?.showAds
+            : window.IMobile?.Native?.PC?.showAds;
 
-  loadImobileScript()
-    .then(() => {
-      console.log("i-mobile: script loaded");
-      console.log("i-mobile object", window.IMobile);
+        if (!showAds) {
+          console.log("i-mobile: showAds not found", adType);
+          if (adWrap) adWrap.style.display = "none";
+          return;
+        }
 
-      if (!window.IMobile?.Native?.PC?.showAds) {
-        console.log("i-mobile: showAds not found");
-        return;
-      }
+        showAds({
+          pid: adSlot.pid,
+          asid: adSlot.asid,
+        });
 
-console.log("i-mobile: before showAds", {
-  pid: adSlot.pid,
-  asid: adSlot.asid,
-  containerId: adSlot.containerId,
-});
+        setTimeout(() => {
+          const container = document.getElementById(adSlot.containerId);
 
-window.IMobile.Native.PC.showAds({
-  pid: adSlot.pid,
-  asid: adSlot.asid,
-});
+          const hasAdContent =
+            container &&
+            container.innerHTML.trim().length > 0 &&
+            container.childNodes.length > 0;
 
-console.log("i-mobile: showAds called", {
-  pid: adSlot.pid,
-  asid: adSlot.asid,
-  containerId: adSlot.containerId,
-});
+          if (!hasAdContent && adWrap) {
+            adWrap.style.display = "none";
+          }
 
-setTimeout(() => {
-  const container = document.getElementById(adSlot.containerId);
-
-  console.log("i-mobile: container after 2s", {
-    containerId: adSlot.containerId,
-    exists: Boolean(container),
-    innerHTML: container?.innerHTML,
-    childCount: container?.childNodes?.length,
-  });
-}, 2000);
-
-      console.log("i-mobile: showAds called", {
-        pid: adSlot.pid,
-        asid: adSlot.asid,
+          if (hasAdContent && adWrap) {
+            adWrap.style.display = "";
+          }
+        }, 2000);
+      })
+      .catch((error) => {
+        console.error("i-mobile: script load failed", error);
+        if (adWrap) adWrap.style.display = "none";
       });
-    })
-    .catch((error) => {
-      console.error("i-mobile: script load failed", error);
-    });
-}, [adIndex]);
+  }, [adIndex]);
 
   if (!INFEED_AD_ENABLED) {
-    return null;
-  }
-
-  if (!IMOBILE_AD_SLOTS[adIndex]) {
     return null;
   }
 

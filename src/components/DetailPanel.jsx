@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import EventCard from "./EventCard";
-import AdsenseSlot, { INFEED_AD_ENABLED } from "./AdsenseSlot";
+import AdsenseSlot, {
+  INFEED_AD_ENABLED,
+  getInfeedAdPositions,
+} from "./AdsenseSlot";
 function DetailPanel({
   selectedCountry,
   events,
@@ -209,28 +212,29 @@ function DetailPanel({
     ? `${selectedCountry.nameJa || selectedCountry.name} の今週まとめ`
     : "世界の今週まとめ";
 
-  const newsItemsWithAds = events.flatMap((event, index) => {
-    const items = [
-      {
-        type: "event",
-        id: event.id,
-        event,
-      },
-    ];
+const adPositions = getInfeedAdPositions();
 
-    const adPositions = [0, 3, 6];
-    const adIndex = adPositions.indexOf(index);
+const newsItemsWithAds = events.flatMap((event, index) => {
+  const items = [
+    {
+      type: "event",
+      id: event.id,
+      event,
+    },
+  ];
 
-    if (adIndex !== -1) {
-      items.push({
-        type: "ad",
-        id: `ad-${adIndex}`,
-        adIndex,
-      });
-    }
+  const adIndex = adPositions.indexOf(index);
 
-    return items;
-  });
+  if (adIndex !== -1) {
+    items.push({
+      type: "ad",
+      id: `ad-${adIndex}`,
+      adIndex,
+    });
+  }
+
+  return items;
+});
 
 return (
   <div className="detail-panel" ref={panelRef}>
