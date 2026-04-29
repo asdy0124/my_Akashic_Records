@@ -209,37 +209,28 @@ function DetailPanel({
     ? `${selectedCountry.nameJa || selectedCountry.name} の今週まとめ`
     : "世界の今週まとめ";
 
-  const newsItemsWithAds = useMemo(() => {
-    const items = [];
-
-    events.forEach((event, index) => {
-      items.push({
+  const newsItemsWithAds = events.flatMap((event, index) => {
+    const items = [
+      {
         type: "event",
-        id: `event-${event.id}`,
+        id: event.id,
         event,
+      },
+    ];
+
+    const adPositions = [0, 3, 6];
+    const adIndex = adPositions.indexOf(index);
+
+    if (adIndex !== -1) {
+      items.push({
+        type: "ad",
+        id: `ad-${adIndex}`,
+        adIndex,
       });
-
-      // 👇ここ追加（2件目の後に広告）
-      if (index === 1) {
-        items.push({
-          type: "ad",
-          id: "ad-first",
-        });
-      }
-
-      const isEveryThird = (index + 1) % 3 === 0;
-      const isNotLast = index !== events.length - 1;
-
-      if (isEveryThird && isNotLast) {
-        items.push({
-          type: "ad",
-          id: `ad-after-${event.id}`,
-        });
-      }
-    });
+    }
 
     return items;
-  }, [events]);
+  });
 
 return (
   <div className="detail-panel" ref={panelRef}>
@@ -392,11 +383,8 @@ return (
                   <div key={item.id} className="infeed-ad-wrap" aria-label="広告">
                     <AdsenseSlot
                       className="infeed-ad-slot"
-                      slot="2385861500"
-                      format="fluid"
-                      responsive="true"
                       style={{ width: "100%" }}
-                      layout="in-article"
+                      adIndex={item.adIndex}
                     />
                   </div>
                 );
