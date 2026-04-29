@@ -56,33 +56,59 @@ function AdsenseSlot({
 }) {
   const adRef = useRef(null);
 
-  useEffect(() => {
-    if (!INFEED_AD_ENABLED) return;
-    if (!adRef.current) return;
+useEffect(() => {
+  if (!INFEED_AD_ENABLED) {
+    console.log("i-mobile: disabled");
+    return;
+  }
 
-    const adSlot = IMOBILE_AD_SLOTS[adIndex];
+  if (!adRef.current) {
+    console.log("i-mobile: adRef is null");
+    return;
+  }
 
-    if (!adSlot) return;
+  const adSlot = IMOBILE_AD_SLOTS[adIndex];
 
-    adRef.current.innerHTML = "";
+  console.log("i-mobile: adIndex", adIndex);
+  console.log("i-mobile: adSlot", adSlot);
 
-    const adContainer = document.createElement("div");
-    adContainer.id = adSlot.containerId;
-    adRef.current.appendChild(adContainer);
+  if (!adSlot) {
+    console.log("i-mobile: no adSlot");
+    return;
+  }
 
-    loadImobileScript()
-      .then(() => {
-        if (!window.Imobile?.Native?.PC?.showAds) return;
+  adRef.current.innerHTML = "";
 
-        window.Imobile.Native.PC.showAds({
-          pid: adSlot.pid,
-          asid: adSlot.asid,
-        });
-      })
-      .catch((error) => {
-        console.error(error);
+  const adContainer = document.createElement("div");
+  adContainer.id = adSlot.containerId;
+  adRef.current.appendChild(adContainer);
+
+  console.log("i-mobile: created container", adContainer.id);
+
+  loadImobileScript()
+    .then(() => {
+      console.log("i-mobile: script loaded");
+      console.log("i-mobile object", window.Imobile);
+
+      if (!window.Imobile?.Native?.PC?.showAds) {
+        console.log("i-mobile: showAds not found");
+        return;
+      }
+
+      window.Imobile.Native.PC.showAds({
+        pid: adSlot.pid,
+        asid: adSlot.asid,
       });
-  }, [adIndex]);
+
+      console.log("i-mobile: showAds called", {
+        pid: adSlot.pid,
+        asid: adSlot.asid,
+      });
+    })
+    .catch((error) => {
+      console.error("i-mobile: script load failed", error);
+    });
+}, [adIndex]);
 
   if (!INFEED_AD_ENABLED) {
     return null;
