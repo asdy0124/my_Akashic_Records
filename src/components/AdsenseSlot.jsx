@@ -95,10 +95,33 @@ useEffect(() => {
         return;
       }
 
-      window.Imobile.Native.PC.showAds({
-        pid: adSlot.pid,
-        asid: adSlot.asid,
-      });
+console.log("i-mobile: before showAds", {
+  pid: adSlot.pid,
+  asid: adSlot.asid,
+  containerId: adSlot.containerId,
+});
+
+window.Imobile.Native.PC.showAds({
+  pid: adSlot.pid,
+  asid: adSlot.asid,
+});
+
+console.log("i-mobile: showAds called", {
+  pid: adSlot.pid,
+  asid: adSlot.asid,
+  containerId: adSlot.containerId,
+});
+
+setTimeout(() => {
+  const container = document.getElementById(adSlot.containerId);
+
+  console.log("i-mobile: container after 2s", {
+    containerId: adSlot.containerId,
+    exists: Boolean(container),
+    innerHTML: container?.innerHTML,
+    childCount: container?.childNodes?.length,
+  });
+}, 2000);
 
       console.log("i-mobile: showAds called", {
         pid: adSlot.pid,
